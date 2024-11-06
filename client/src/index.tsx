@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignupPage from './pages/Signup'
+import BoardsPage from './pages/Boards'
+import BoardPage from './pages/Board'
 
 const router = createBrowserRouter([
   {
@@ -9,8 +11,12 @@ const router = createBrowserRouter([
     element: <div>Hello world! 1</div>,
   },
   {
-    path: '/test',
-    element: <div>test</div>,
+    path: '/boards',
+    element: <BoardsPage />,
+  },
+  {
+    path: '/boards/:boardId',
+    element: <BoardPage />,
   },
   {
     path: 'users/signup',
