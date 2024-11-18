@@ -4,11 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignupPage from './pages/Signup'
 import BoardsPage from './pages/Boards'
 import BoardPage from './pages/Board'
+import './index.css'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>Hello world! 1</div>,
+    element: <div className="text-3xl font-bold underline">Hello world!</div>,
   },
   {
     path: '/boards',
