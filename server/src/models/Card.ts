@@ -1,3 +1,4 @@
+import { ProjectSchema } from '../utils/customSchema'
 import mongoose, { Document, Schema } from 'mongoose'
 
 interface ICard extends Document {
@@ -5,10 +6,13 @@ interface ICard extends Document {
   list: mongoose.Types.ObjectId
 }
 
-const cardSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  list: { type: mongoose.Schema.Types.ObjectId, ref: 'List', required: true },
-})
+const cardSchema: Schema = new ProjectSchema(
+  {
+    name: { type: String, required: true },
+    list: { type: mongoose.Schema.Types.ObjectId, ref: 'List', required: true },
+  },
+  { timestamps: true }
+)
 
 const Card = mongoose.model<ICard>('Card', cardSchema)
 

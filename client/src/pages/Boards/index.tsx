@@ -17,7 +17,10 @@ const BoardsPage = () => {
   }, [])
 
   const addBoard = async () => {
-    const body = JSON.stringify({ name: boardNameRef.current?.value })
+    const body = JSON.stringify({
+      name: boardNameRef.current?.value,
+      owner: '6728e0ca12ed2973a9f522a2',
+    })
     const { data } = await axios.post<IBoard>(
       'http://localhost:5000/boards',
       body,
@@ -33,9 +36,8 @@ const BoardsPage = () => {
   return (
     <div>
       {boards.map(board => (
-        <BoardPreview {...board} />
+        <BoardPreview {...board} key={board.id} />
       ))}
-
       <input ref={boardNameRef} />
       <button onClick={addBoard}>Create a board</button>
     </div>

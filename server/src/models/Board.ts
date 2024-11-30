@@ -1,3 +1,4 @@
+import { ProjectSchema } from '../utils/customSchema'
 import mongoose, { Document, Schema } from 'mongoose'
 
 interface IBoard extends Document {
@@ -6,10 +7,25 @@ interface IBoard extends Document {
   description?: string
 }
 
-const boardSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  description: { type: String, required: false },
+const boardSchema: Schema = new ProjectSchema(
+  {
+    name: { type: String, required: true },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    description: { type: String, required: false },
+  },
+  {
+    timestamps: true,
+  }
+)
+
+boardSchema.virtual('lists', {
+  ref: 'List',
+  localField: '_id',
+  foreignField: 'board',
 })
 
 const Board = mongoose.model<IBoard>('Board', boardSchema)
