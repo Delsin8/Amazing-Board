@@ -2,9 +2,9 @@ import Board, { IBoard } from '../models/Board'
 import { Request, Response } from 'express'
 
 export const createBoard = async (req: Request, res: Response) => {
-  const { name } = req.body
+  const { name, owner } = req.body
   try {
-    const board: IBoard = new Board({ name })
+    const board: IBoard = new Board({ name, owner })
     await board.save()
     res.status(201).json(board)
   } catch (error: any) {
@@ -22,12 +22,24 @@ export const getAllBoards = async (req: Request, res: Response) => {
 }
 
 export const getOneBoard = async (req: Request, res: Response) => {
-  const { id } = req.params
   try {
+    const { id } = req.params
+
     const board = await Board.findById(id)
-    if (board) res.json(board)
-    else res.status(404)
+      .populate({
+        path: 'lists',
+        populate: { path: 'cards' },
+      })
+      .exec()
+
+    if (!board) {
+      res.status(404).json({ message: 'Board not found' })
+      return
+    }
+
+    res.json(board)
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching boards', error })
+    console.error(error)
+    res.status(500).json({ message: 'Error fetching board data', error })
   }
 }
