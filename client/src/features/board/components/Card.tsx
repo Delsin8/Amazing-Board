@@ -3,8 +3,8 @@ import { ICard } from '../../../types/commonTypes'
 
 const Card: React.FC<ICard> = ({ name }) => {
   return (
-    <div>
-      <div>{name}</div>
+    <div className="bg-white rounded-lg border border-slate-300 p-4">
+      <span className="font-semibold">{name}</span>
     </div>
   )
 }

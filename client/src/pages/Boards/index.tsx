@@ -1,20 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import BoardPreview from './BoardPreview'
 import { IBoard } from '../../types/commonTypes'
 import axios from 'axios'
+import useFetch from '../../hooks/useFetch'
 
 const BoardsPage = () => {
-  const [boards, setBoards] = useState<IBoard[]>([])
   const boardNameRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const fetchBoards = async () => {
-      const { data } = await axios.get<IBoard[]>('http://localhost:5000/boards')
-      setBoards(data)
-    }
-
-    fetchBoards()
-  }, [])
+  const [boards, isLoading, error, setBoards] = useFetch<IBoard[]>(
+    `/boards`,
+    []
+  )
 
   const addBoard = async () => {
     const body = JSON.stringify({
@@ -22,7 +17,7 @@ const BoardsPage = () => {
       owner: '6728e0ca12ed2973a9f522a2',
     })
     const { data } = await axios.post<IBoard>(
-      'http://localhost:5000/boards',
+      `${process.env.API_URL}/boards`,
       body,
       {
         headers: {
@@ -30,18 +25,20 @@ const BoardsPage = () => {
         },
       }
     )
-    setBoards([...boards, data])
+    setBoards([...boards!, data])
   }
 
-  return (
-    <div>
-      {boards.map(board => (
-        <BoardPreview {...board} key={board.id} />
-      ))}
-      <input ref={boardNameRef} />
-      <button onClick={addBoard}>Create a board</button>
-    </div>
-  )
+  if (isLoading) return <div>Loading...</div>
+  else if (!isLoading && boards)
+    return (
+      <div>
+        {boards.map(board => (
+          <BoardPreview {...board} key={board.id} />
+        ))}
+        <input ref={boardNameRef} />
+        <button onClick={addBoard}>Create a board</button>
+      </div>
+    )
 }
 
 export default BoardsPage
