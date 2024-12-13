@@ -5,11 +5,13 @@ import SignupPage from './pages/Signup'
 import BoardsPage from './pages/Boards'
 import BoardPage from './pages/Board'
 import './index.css'
+import HomePage from './pages/Home'
+import { SocketProvider } from './context/SocketProvider'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div className="text-3xl font-bold underline">Hello world!</div>,
+    element: <HomePage />,
   },
   {
     path: '/boards',
@@ -26,7 +28,9 @@ const router = createBrowserRouter([
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <SocketProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </SocketProvider>
+  // </React.StrictMode>
 )
