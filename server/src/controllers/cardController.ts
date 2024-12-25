@@ -31,3 +31,19 @@ export const getOneCard = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching cards', error })
   }
 }
+
+// Socket
+
+export const updateCardName = async ({
+  id,
+  name,
+}: {
+  id: string
+  name: string
+}) => {
+  try {
+    await Card.findByIdAndUpdate(id, { name })
+  } catch (error: any) {
+    console.log(error?.message)
+  }
+}

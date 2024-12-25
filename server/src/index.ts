@@ -6,6 +6,7 @@ import { Server } from 'socket.io'
 
 import app from './app'
 import connectDB from './config/db'
+import { updateCardName } from './controllers/cardController'
 
 const server = createServer(app)
 const io = new Server(server, {
@@ -29,6 +30,11 @@ io.on('connection', socket => {
 
   socket.on('message', (value: string) => {
     console.log(`message: ${value}`)
+  })
+
+  socket.on('updateCardName', (value: { id: string; name: string }) => {
+    console.log(`New card: ${value.name}, ${value.id}`)
+    updateCardName(value)
   })
 
   socket.emit('message_response', 'message from server')

@@ -7,6 +7,7 @@ interface ServerToClientEvents {
 
 interface ClientToServerEvents {
   message: (value: string) => void
+  updateCardName: (value: { id: string; name: string }) => void
 }
 
 interface SocketContextType {
