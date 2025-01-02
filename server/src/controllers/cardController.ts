@@ -1,3 +1,4 @@
+import { sendBoardUpdate } from '../kafka/producers/boardProducer'
 import Card, { ICard } from '../models/Card'
 import { Request, Response } from 'express'
 
@@ -43,6 +44,13 @@ export const updateCardName = async ({
 }) => {
   try {
     await Card.findByIdAndUpdate(id, { name })
+
+    await sendBoardUpdate('board-consumers', {
+      action: 'update-card-name',
+      // boardId
+      cardId: id,
+      cardName: name,
+    })
   } catch (error: any) {
     console.log(error?.message)
   }

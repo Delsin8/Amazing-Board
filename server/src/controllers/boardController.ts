@@ -1,5 +1,6 @@
 import Board, { IBoard } from '../models/Board'
 import { Request, Response } from 'express'
+import { sendBoardUpdate } from '../kafka/producers/boardProducer'
 
 export const createBoard = async (req: Request, res: Response) => {
   const { name, owner } = req.body

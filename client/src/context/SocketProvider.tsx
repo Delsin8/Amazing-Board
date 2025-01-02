@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client'
 
 interface ServerToClientEvents {
   message_response: (value: string) => void
+  updatedCardName: (value: string) => void
 }
 
 interface ClientToServerEvents {
