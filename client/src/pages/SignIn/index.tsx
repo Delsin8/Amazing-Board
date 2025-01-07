@@ -1,5 +1,4 @@
 import React, { useRef } from 'react'
-import axios from 'axios'
 import apiClient from '../../api/apiClient'
 
 const SignInPage = () => {
@@ -13,7 +12,7 @@ const SignInPage = () => {
       username: nameRef.current?.value,
       password: passwordRef.current?.value,
     })
-    axios
+    apiClient
       .post<{ token: string }>('http://localhost:5000/users/signin', body, {
         headers: { 'Content-Type': 'application/json' },
       })

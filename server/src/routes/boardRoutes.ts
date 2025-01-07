@@ -1,3 +1,4 @@
+import { authMiddleware } from '../middlewares/authMiddleware'
 import {
   createBoard,
   getAllBoards,
@@ -7,8 +8,8 @@ import express from 'express'
 
 const router = express.Router()
 
-router.post('/', createBoard)
-router.get('/:id', getOneBoard)
+router.post('/', authMiddleware, createBoard)
+router.get('/:id', authMiddleware, getOneBoard)
 router.get('/', getAllBoards)
 
 export default router

@@ -1,18 +1,30 @@
+import { BoardAccessibility } from '../types/common'
 import { ProjectSchema } from '../utils/customSchema'
 import mongoose, { Document, Schema } from 'mongoose'
 
 interface IBoard extends Document {
-  name: string
-  owner: mongoose.Types.ObjectId
+  title: string
+  accessibility: BoardAccessibility
+  owner?: mongoose.Types.ObjectId
+  allowedUsers: mongoose.Types.ObjectId[]
   description?: string
 }
 
 const boardSchema: Schema = new ProjectSchema(
   {
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+    },
+    allowedUsers: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      required: true,
+    },
+    accessibility: {
+      type: String,
+      enum: [BoardAccessibility.Private, BoardAccessibility.Public],
       required: true,
     },
     description: { type: String, required: false },
