@@ -1,13 +1,11 @@
 import mongoose from 'mongoose'
 import { Request, Response } from 'express'
-import { BoardAccessibility } from '../types/common'
+import { BoardAccessibility } from '../../../shared/types'
 import Board, { IBoard } from '../models/Board'
 
 export const createBoard = async (req: Request, res: Response) => {
   const { body, user } = req
   const hasUser = Boolean(user?.id)
-
-  console.log(user)
 
   try {
     const accessibility =
@@ -18,8 +16,6 @@ export const createBoard = async (req: Request, res: Response) => {
     const allowedUsers = []
     if (accessibility === BoardAccessibility.Private && hasUser)
       allowedUsers.push(user!.id)
-
-    console.log(user?.id, body.title, accessibility, allowedUsers)
 
     const board: IBoard = new Board({
       owner: user?.id,
@@ -80,5 +76,58 @@ export const getOneBoard = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Error fetching board data', error })
+  }
+}
+
+export const addAllowedUser = async (req: Request, res: Response) => {
+  const { boardId, userId } = req.params
+  const user = new mongoose.Types.ObjectId(userId as string)
+
+  try {
+    const board = await Board.findById(boardId)
+    if (!board) {
+      res.status(404).json({ message: 'Board not found' })
+      return
+    }
+
+    const userExists = board.allowedUsers.some(allowedUser =>
+      allowedUser.equals(user)
+    )
+    if (!userExists) {
+      board.allowedUsers.push(user)
+      await board.save()
+    }
+
+    res.status(200).json(board)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: 'Error adding the user to access the board',
+      error,
+    })
+  }
+}
+
+export const removeAllowedUser = async (req: Request, res: Response) => {
+  const { boardId, userId } = req.params
+  const user = new mongoose.Types.ObjectId(userId as string)
+
+  try {
+    const board = await Board.findById(boardId)
+    if (!board) {
+      res.status(404).json({ message: 'Board not found' })
+      return
+    }
+
+    board.allowedUsers = board.allowedUsers.filter(id => !id.equals(user))
+    await board.save()
+
+    res.status(200).json(board)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: 'Error removing allowed user from accessing the board',
+      error,
+    })
   }
 }

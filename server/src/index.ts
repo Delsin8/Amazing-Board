@@ -21,11 +21,11 @@ const PORT = process.env.PORT || 5000
 connectDB()
 
 io.on('connection', socket => {
-  console.log('a user connected - ', socket.id)
+  // console.log('a user connected - ', socket.id)
 
-  socket.on('disconnect', () => {
-    console.log(`user disconnected - ${socket.id}`)
-  })
+  // socket.on('disconnect', () => {
+  //   console.log(`user disconnected - ${socket.id}`)
+  // })
 
   socket.on('message', (value: string) => {
     console.log(`message: ${value}`)

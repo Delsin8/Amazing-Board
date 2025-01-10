@@ -1,4 +1,4 @@
-import { BoardAccessibility } from '../types/common'
+import { BoardAccessibility } from '../../../shared/types'
 import { ProjectSchema } from '../utils/customSchema'
 import mongoose, { Document, Schema } from 'mongoose'
 

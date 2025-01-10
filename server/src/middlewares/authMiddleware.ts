@@ -1,5 +1,7 @@
+import Board from '../models/Board'
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
@@ -57,4 +59,17 @@ export const protectedAuthMiddleware = async (
     res.status(401).json({ message: 'Invalid or expired token' })
     return
   }
+}
+
+export const isBoardOwner = async (req: any, res: any, next: any) => {
+  const board = await Board.findById(req.params.boardId)
+  if (!board) return res.status(404).json({ message: 'Board not found' })
+
+  const user = new mongoose.Types.ObjectId(req.user.id as string)
+  if (!board.owner?.equals(user)) {
+    return res
+      .status(403)
+      .json({ message: 'Only the board leader can perform this action' })
+  }
+  next()
 }
