@@ -1,5 +1,5 @@
+import apiClient from '../../api/apiClient'
 import React, { useRef } from 'react'
-import axios from 'axios'
 
 const SignupPage = () => {
   const nameRef = useRef<HTMLInputElement>(null)
@@ -13,7 +13,7 @@ const SignupPage = () => {
       email: emailRef.current?.value,
       password: passwordRef.current?.value,
     })
-    axios.post('http://localhost:5000/users/signup', body, {
+    apiClient.post('http://localhost:5000/users/signup', body, {
       headers: { 'Content-Type': 'application/json' },
     })
   }

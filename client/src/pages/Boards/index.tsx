@@ -1,8 +1,8 @@
 import React, { useRef } from 'react'
 import BoardPreview from './BoardPreview'
 import { IBoard } from '../../types/commonTypes'
-import axios from 'axios'
 import useFetch from '../../hooks/useFetch'
+import apiClient from '../../api/apiClient'
 
 const BoardsPage = () => {
   const boardNameRef = useRef<HTMLInputElement>(null)
@@ -13,10 +13,10 @@ const BoardsPage = () => {
 
   const addBoard = async () => {
     const body = JSON.stringify({
-      name: boardNameRef.current?.value,
-      owner: '6728e0ca12ed2973a9f522a2',
+      accessibility: 'private',
+      title: boardNameRef.current?.value,
     })
-    const { data } = await axios.post<IBoard>(
+    const { data } = await apiClient.post<IBoard>(
       `${process.env.API_URL}/boards`,
       body,
       {

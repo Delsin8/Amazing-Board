@@ -1,5 +1,7 @@
+import Board from '../models/Board'
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
@@ -10,7 +12,32 @@ interface TokenPayload {
   exp: number
 }
 
+// this version of auth middleware doesn't require user to be authenticated
 export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    next()
+    return
+  }
+
+  const token = authHeader.split(' ')[1]
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload
+    req.user = { id: decoded.id, username: decoded.username }
+    next()
+  } catch (error) {
+    next()
+  }
+}
+
+// this version of auth middleware requires user to be authenticated
+export const protectedAuthMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -32,4 +59,17 @@ export const authMiddleware = async (
     res.status(401).json({ message: 'Invalid or expired token' })
     return
   }
+}
+
+export const isBoardOwner = async (req: any, res: any, next: any) => {
+  const board = await Board.findById(req.params.boardId)
+  if (!board) return res.status(404).json({ message: 'Board not found' })
+
+  const user = new mongoose.Types.ObjectId(req.user.id as string)
+  if (!board.owner?.equals(user)) {
+    return res
+      .status(403)
+      .json({ message: 'Only the board leader can perform this action' })
+  }
+  next()
 }

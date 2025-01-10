@@ -1,7 +1,10 @@
+import { BoardAccessibility } from '../../../shared/types'
+
 export interface IBoard {
   id: string
   name: string
   description?: string
+  accessibility: BoardAccessibility
   lists: IList[]
 }
 

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import apiClient from '../api/apiClient'
 import React, { useEffect, useState } from 'react'
 
 function useFetch<T>(
@@ -17,7 +17,7 @@ function useFetch<T>(
   useEffect(() => {
     setIsLoading(true)
     const fetchData = async () => {
-      const { data } = await axios.get<T>(`${process.env.API_URL}${url}`)
+      const { data } = await apiClient.get<T>(`${process.env.API_URL}${url}`)
       setData(data)
     }
 
