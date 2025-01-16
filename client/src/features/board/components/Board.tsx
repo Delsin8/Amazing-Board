@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react'
 import { IBoard } from '../../../types/commonTypes'
 import List from './List'
-import { useSocket } from '../../../context/SocketProvider'
+import { BoardAccessibility } from '../../../../../shared/types'
+import BoardSettings from './BoardSettings'
 
-const Board: React.FC<IBoard> = ({ name, description, lists }) => {
-  const { socket } = useSocket()
-
-  useEffect(() => {
-    socket?.on('updatedCardName', value => console.log(value))
-  }, [])
-
+const Board: React.FC<IBoard> = ({
+  id,
+  name,
+  description,
+  lists,
+  accessibility,
+}) => {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <h1 className="font-bold text-3xl">{name}</h1>
       <div className="mb-4">{description}</div>
 
@@ -20,6 +21,10 @@ const Board: React.FC<IBoard> = ({ name, description, lists }) => {
           <List {...list} key={list.id} />
         ))}
       </ol>
+
+      {accessibility === BoardAccessibility.Private && (
+        <BoardSettings boardId={id} />
+      )}
     </div>
   )
 }
