@@ -1,16 +1,11 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import apiClient from '../../api/apiClient'
-import { ICard, IList } from '../../types/commonTypes'
+import { IBoard, ICard, IList } from '../../types/commonTypes'
 import { normalize } from 'normalizr'
 import { boardSchema } from './schemas'
 
-interface Board {
-  id: string
-  title: string
-}
-
 interface BoardState {
-  board: Board | null
+  board: IBoard | null
   lists: Record<string, IList>
   cards: Record<string, ICard>
 }
@@ -30,6 +25,9 @@ const boardSlice = createSlice({
       state.lists = {}
       state.cards = {}
     },
+    updateCardPosition(state, action: PayloadAction<ICard>) {
+      state.cards[action.payload.id] = action.payload
+    },
   },
   extraReducers: builder => {
     builder
@@ -39,7 +37,7 @@ const boardSlice = createSlice({
       })
       .addCase(fetchBoard.fulfilled, (state, action) => {
         const data = normalize(action.payload, boardSchema)
-        state.board = data.entities.boards![data.result] as Board
+        state.board = data.entities.boards![data.result] as IBoard
         state.lists = data.entities.lists as Record<string, IList>
         state.cards = data.entities.cards as Record<string, ICard>
         // state.loading = false
@@ -62,5 +60,5 @@ export const fetchBoard = createAsyncThunk(
   }
 )
 
-export const { clearBoardData } = boardSlice.actions
+export const { clearBoardData, updateCardPosition } = boardSlice.actions
 export default boardSlice.reducer

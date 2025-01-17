@@ -2,19 +2,21 @@ import { BoardAccessibility } from '../../../shared/types'
 
 export interface IBoard {
   id: string
-  name: string
+  title: string
   description?: string
   accessibility: BoardAccessibility
-  lists: IList[]
+  lists: string[]
 }
 
 export interface IList {
   id: string
   name: string
-  cards: ICard[]
+  cards: string[]
 }
 
 export interface ICard {
   id: string
   name: string
+  position: number
+  list: string
 }

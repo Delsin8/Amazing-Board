@@ -31,3 +31,14 @@ export const getOneCard = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching cards', error })
   }
 }
+
+export const reorderCard = async (req: Request, res: Response) => {
+  const { cardId, targetPosition } = req.params
+  try {
+    const card = await Card.findById(cardId)
+    if (card) res.json(card)
+    else res.status(404)
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching cards', error })
+  }
+}
