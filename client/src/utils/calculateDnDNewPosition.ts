@@ -1,35 +1,34 @@
 const calculateDndNewPosition = <T extends { id: string; position: number }>(
   items: T[],
-  overCardIndex: number,
-  activeCardIndex: number,
+  overItemIndex: number,
+  activeItemIndex: number,
   isSameList: boolean
 ) => {
   let newPos = 0
-
-  const prevCardIndex = overCardIndex - 1
-  const nextCardIndex = overCardIndex + 1
+  const prevCardIndex = overItemIndex - 1
+  const nextCardIndex = overItemIndex + 1
 
   if (!isSameList) {
-    if (!items[prevCardIndex]) newPos = items[overCardIndex].position / 2
+    if (!items[prevCardIndex]) newPos = items[overItemIndex].position / 2
     else if (!items[nextCardIndex])
       newPos = items[items.length - 1].position + 1000
     else
       newPos =
-        (items[prevCardIndex].position + items[overCardIndex].position) / 2
+        (items[prevCardIndex].position + items[overItemIndex].position) / 2
   } else {
-    if (activeCardIndex > overCardIndex) {
+    if (activeItemIndex > overItemIndex) {
       if (!items[prevCardIndex]) {
-        newPos = items[overCardIndex].position / 2
+        newPos = items[overItemIndex].position / 2
       } else {
         newPos =
-          (items[prevCardIndex].position + items[overCardIndex].position) / 2
+          (items[prevCardIndex].position + items[overItemIndex].position) / 2
       }
     } else {
       if (!items[nextCardIndex]) {
-        newPos = items[overCardIndex].position + 1000
+        newPos = items[overItemIndex].position + 1000
       } else
         newPos =
-          (items[overCardIndex].position + items[nextCardIndex].position) / 2
+          (items[overItemIndex].position + items[nextCardIndex].position) / 2
     }
   }
 

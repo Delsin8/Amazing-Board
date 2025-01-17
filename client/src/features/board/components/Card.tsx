@@ -21,7 +21,7 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: cardId })
+  } = useSortable({ id: cardId, data: { type: 'CARD' } })
 
   const style = {
     transition,

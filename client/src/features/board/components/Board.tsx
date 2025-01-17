@@ -2,59 +2,83 @@ import React from 'react'
 import List from './List'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'app/store'
 import { closestCorners, DndContext, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { updateCardPosition } from '../boardSlice'
+import { updateCardPosition, updateListPosition } from '../boardSlice'
 import calculateDndNewPosition from '../../../utils/calculateDnDNewPosition'
+import {
+  selectDenormalizedBoard,
+  selectDenormalizedCards,
+} from '../boardSelectors'
 
 const Board: React.FC = () => {
-  const {
-    board,
-    lists: listsNormalized,
-    cards: cardsNormalized,
-  } = useSelector((state: RootState) => state.board)
   const dispatch = useDispatch()
 
-  const lists = Object.values(listsNormalized)
-  const cards = Object.values(cardsNormalized)
+  const board = useSelector(selectDenormalizedBoard)
+  const cards = useSelector(selectDenormalizedCards)
+
+  if (!board) return null
+
+  console.log(board)
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
     if (!active.id || !over?.id || active.id === over.id) return
 
-    const overList = lists.find(list =>
-      list.cards.includes(over.id as string)
-    )?.id
-    const activeList = lists.find(list =>
-      list.cards.includes(active.id as string)
-    )?.id
-    if (!overList || !activeList) return
+    if (active.data.current?.type === 'CARD') {
+      const overList = board.lists.find(list =>
+        list.cards.some(card => card.id === over.id)
+      )
+      const activeList = board.lists.find(list =>
+        list.cards.some(card => card.id === active.id)
+      )
 
-    const isSameList = overList === activeList
+      if (!overList?.id || !activeList?.id) return
 
-    const listCards = cards
-      .filter(card => card.list === overList)
-      .sort((a, b) => a.position - b.position)
+      const isSameList = overList === activeList
 
-    const overCardIndex = listCards.findIndex(card => card.id === over.id)
-    const activeCardIndex = listCards.findIndex(card => card.id === active.id)
+      const listCards = cards
+        .filter(card => card.list === overList.id)
+        .sort((a, b) => a.position - b.position)
 
-    const newPosition = calculateDndNewPosition(
-      listCards,
-      overCardIndex,
-      activeCardIndex,
-      isSameList
-    )
+      const overCardIndex = listCards.findIndex(card => card.id === over.id)
+      const activeCardIndex = listCards.findIndex(card => card.id === active.id)
 
-    const card = {
-      ...cards.find(item => item.id === active.id)!,
-      position: newPosition,
-      list: overList,
+      const newPosition = calculateDndNewPosition(
+        listCards,
+        overCardIndex,
+        activeCardIndex,
+        isSameList
+      )
+
+      const card = {
+        id: active.id as string,
+        position: newPosition,
+        list: overList.id,
+      }
+
+      dispatch(updateCardPosition(card))
+    } else if (active.data.current?.type === 'LIST') {
+      const overListIndex = board.lists.findIndex(item => item.id === over.id)
+      const activeListIndex = board.lists.findIndex(
+        item => item.id === active.id
+      )
+
+      const newPosition = calculateDndNewPosition(
+        board.lists,
+        overListIndex,
+        activeListIndex,
+        true
+      )
+
+      const list = {
+        id: active.id as string,
+        position: newPosition,
+      }
+
+      dispatch(updateListPosition(list))
     }
-
-    dispatch(updateCardPosition(card))
   }
 
   return (
@@ -67,8 +91,11 @@ const Board: React.FC = () => {
           collisionDetection={closestCorners}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={cards} strategy={verticalListSortingStrategy}>
-            {lists.map(list => (
+          <SortableContext
+            items={[...board.lists, ...cards]}
+            // strategy={verticalListSortingStrategy}
+          >
+            {board.lists.map(list => (
               <List listId={list.id} key={list.id} />
             ))}
           </SortableContext>

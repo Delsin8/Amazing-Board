@@ -1,12 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import apiClient from '../../api/apiClient'
-import { IBoard, ICard, IList } from '../../types/commonTypes'
+import {
+  IBoard,
+  IBoardNormalized,
+  ICard,
+  IList,
+  IListNormalized,
+} from '../../types/commonTypes'
 import { normalize } from 'normalizr'
 import { boardSchema } from './schemas'
 
 interface BoardState {
-  board: IBoard | null
-  lists: Record<string, IList>
+  board: IBoardNormalized | null
+  lists: Record<string, IListNormalized>
   cards: Record<string, ICard>
 }
 
@@ -25,8 +31,18 @@ const boardSlice = createSlice({
       state.lists = {}
       state.cards = {}
     },
-    updateCardPosition(state, action: PayloadAction<ICard>) {
-      state.cards[action.payload.id] = action.payload
+    updateListPosition(
+      state,
+      action: PayloadAction<{ id: string; position: number }>
+    ) {
+      state.lists[action.payload.id].position = action.payload.position
+    },
+    updateCardPosition(
+      state,
+      action: PayloadAction<{ id: string; list: string; position: number }>
+    ) {
+      state.cards[action.payload.id].position = action.payload.position
+      state.cards[action.payload.id].list = action.payload.list
     },
   },
   extraReducers: builder => {
@@ -37,8 +53,9 @@ const boardSlice = createSlice({
       })
       .addCase(fetchBoard.fulfilled, (state, action) => {
         const data = normalize(action.payload, boardSchema)
-        state.board = data.entities.boards![data.result] as IBoard
-        state.lists = data.entities.lists as Record<string, IList>
+        console.log(action.payload)
+        state.board = data.entities.board![data.result] as IBoardNormalized
+        state.lists = data.entities.lists as Record<string, IListNormalized>
         state.cards = data.entities.cards as Record<string, ICard>
         // state.loading = false
       })
@@ -60,5 +77,6 @@ export const fetchBoard = createAsyncThunk(
   }
 )
 
-export const { clearBoardData, updateCardPosition } = boardSlice.actions
+export const { clearBoardData, updateListPosition, updateCardPosition } =
+  boardSlice.actions
 export default boardSlice.reducer
