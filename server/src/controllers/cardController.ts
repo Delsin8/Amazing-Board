@@ -33,12 +33,16 @@ export const getOneCard = async (req: Request, res: Response) => {
 }
 
 export const reorderCard = async (req: Request, res: Response) => {
-  const { cardId, targetPosition } = req.params
+  const { cardId, targetPosition, listId } = req.body
   try {
     const card = await Card.findById(cardId)
-    if (card) res.json(card)
-    else res.status(404)
+    if (card) {
+      card.position = targetPosition
+      card.list = listId
+      await card.save()
+      res.json(card)
+    } else res.status(404).json({ message: 'Card is not found' })
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching cards', error })
+    res.status(500).json({ message: "Error updating card's position", error })
   }
 }

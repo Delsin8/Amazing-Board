@@ -63,6 +63,23 @@ const boardSlice = createSlice({
         // state.loading = false
         // state.error = action.error.message || 'Failed to load board list'
       })
+      .addCase(reorderCard.pending, state => {
+        console.log(state)
+        // state.loading = true
+        // state.error = null
+      })
+      .addCase(reorderCard.fulfilled, (state, action) => {
+        // const data = normalize(action.payload, boardSchema)
+        // console.log(action.payload)
+        // state.board = data.entities.board![data.result] as IBoardNormalized
+        // state.lists = data.entities.lists as Record<string, IListNormalized>
+        // state.cards = data.entities.cards as Record<string, ICard>
+        // state.loading = false
+      })
+      .addCase(reorderCard.rejected, (state, action) => {
+        // state.loading = false
+        // state.error = action.error.message || 'Failed to load board list'
+      })
   },
 })
 
@@ -70,6 +87,48 @@ export const fetchBoard = createAsyncThunk(
   'board/fetchBoard',
   async (boardId: string) => {
     const response = await apiClient.get(`/boards/${boardId}`)
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch board list')
+    }
+    return await response.data
+  }
+)
+
+export const reorderCard = createAsyncThunk(
+  'board/reorderCard',
+  async ({
+    cardId,
+    listId,
+    position,
+  }: {
+    cardId: string
+    position: number
+    listId: string
+  }) => {
+    const body = JSON.stringify({ cardId, listId, targetPosition: position })
+    const response = await apiClient.patch(`/cards/reorder`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch board list')
+    }
+    return await response.data
+  }
+)
+
+export const reorderList = createAsyncThunk(
+  'board/reorderList',
+  async ({ listId, position }: { position: number; listId: string }) => {
+    const body = JSON.stringify({ listId, targetPosition: position })
+    const response = await apiClient.patch(`/lists/reorder`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
     if (response.status !== 200) {
       throw new Error('Failed to fetch board list')
     }

@@ -4,7 +4,12 @@ import List from './List'
 import { useDispatch, useSelector } from 'react-redux'
 import { closestCorners, DndContext, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { updateCardPosition, updateListPosition } from '../boardSlice'
+import {
+  reorderCard,
+  reorderList,
+  updateCardPosition,
+  updateListPosition,
+} from '../boardSlice'
 import calculateDndNewPosition from '../../../utils/calculateDnDNewPosition'
 import {
   selectDenormalizedBoard,
@@ -53,12 +58,13 @@ const Board: React.FC = () => {
       )
 
       const card = {
-        id: active.id as string,
+        cardId: active.id as string,
         position: newPosition,
-        list: overList.id,
+        listId: overList.id,
       }
 
-      dispatch(updateCardPosition(card))
+      // @ts-ignore
+      dispatch(reorderCard({ ...card }))
     } else if (active.data.current?.type === 'LIST') {
       const overListIndex = board.lists.findIndex(item => item.id === over.id)
       const activeListIndex = board.lists.findIndex(
@@ -73,11 +79,12 @@ const Board: React.FC = () => {
       )
 
       const list = {
-        id: active.id as string,
+        listId: active.id as string,
         position: newPosition,
       }
 
-      dispatch(updateListPosition(list))
+      // @ts-ignore
+      dispatch(reorderList({ ...list }))
     }
   }
 
