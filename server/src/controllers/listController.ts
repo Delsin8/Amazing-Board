@@ -31,3 +31,17 @@ export const getOneList = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching boards', error })
   }
 }
+
+export const reorderList = async (req: Request, res: Response) => {
+  const { listId, targetPosition } = req.body
+  try {
+    const list = await List.findById(listId)
+    if (list) {
+      list.position = targetPosition
+      await list.save()
+      res.json(list)
+    } else res.status(404).json({ message: 'List is not found' })
+  } catch (error) {
+    res.status(500).json({ message: "Error updating list's position", error })
+  }
+}
