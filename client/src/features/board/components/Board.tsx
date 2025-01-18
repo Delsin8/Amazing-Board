@@ -57,14 +57,27 @@ const Board: React.FC = () => {
         isSameList
       )
 
+      const previousCard = cards.find(card => card.id === active.id)!
+      const previousCardState = {
+        cardId: previousCard.id,
+        position: previousCard.position,
+        listId: previousCard.list,
+      }
+
       const card = {
         cardId: active.id as string,
         position: newPosition,
         listId: overList.id,
       }
 
+      dispatch(updateCardPosition({ ...card }))
+
       // @ts-ignore
       dispatch(reorderCard({ ...card }))
+        .unwrap()
+        .catch(() => {
+          dispatch(updateCardPosition({ ...previousCardState }))
+        })
     } else if (active.data.current?.type === 'LIST') {
       const overListIndex = board.lists.findIndex(item => item.id === over.id)
       const activeListIndex = board.lists.findIndex(
@@ -78,13 +91,25 @@ const Board: React.FC = () => {
         true
       )
 
+      const previousList = board.lists[activeListIndex]
+      const previousListState = {
+        listId: previousList.id,
+        position: previousList.position,
+      }
+
       const list = {
         listId: active.id as string,
         position: newPosition,
       }
 
+      dispatch(updateListPosition({ ...list }))
+
       // @ts-ignore
       dispatch(reorderList({ ...list }))
+        .unwrap()
+        .catch(() => {
+          dispatch(updateListPosition({ ...previousListState }))
+        })
     }
   }
 

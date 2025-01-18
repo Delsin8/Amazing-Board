@@ -33,16 +33,20 @@ const boardSlice = createSlice({
     },
     updateListPosition(
       state,
-      action: PayloadAction<{ id: string; position: number }>
+      action: PayloadAction<{ listId: string; position: number }>
     ) {
-      state.lists[action.payload.id].position = action.payload.position
+      state.lists[action.payload.listId].position = action.payload.position
     },
     updateCardPosition(
       state,
-      action: PayloadAction<{ id: string; list: string; position: number }>
+      action: PayloadAction<{
+        cardId: string
+        listId: string
+        position: number
+      }>
     ) {
-      state.cards[action.payload.id].position = action.payload.position
-      state.cards[action.payload.id].list = action.payload.list
+      state.cards[action.payload.cardId].position = action.payload.position
+      state.cards[action.payload.cardId].list = action.payload.listId
     },
   },
   extraReducers: builder => {
@@ -96,43 +100,59 @@ export const fetchBoard = createAsyncThunk(
 
 export const reorderCard = createAsyncThunk(
   'board/reorderCard',
-  async ({
-    cardId,
-    listId,
-    position,
-  }: {
-    cardId: string
-    position: number
-    listId: string
-  }) => {
-    const body = JSON.stringify({ cardId, listId, targetPosition: position })
-    const response = await apiClient.patch(`/cards/reorder`, body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+  async (
+    {
+      cardId,
+      listId,
+      position,
+    }: {
+      cardId: string
+      position: number
+      listId: string
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const body = JSON.stringify({ cardId, listId, targetPosition: position })
+      const response = await apiClient.patch(`/cards/reorder`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch board list')
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch board list')
+      }
+      return await response.data
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue(error?.message)
     }
-    return await response.data
   }
 )
 
 export const reorderList = createAsyncThunk(
   'board/reorderList',
-  async ({ listId, position }: { position: number; listId: string }) => {
-    const body = JSON.stringify({ listId, targetPosition: position })
-    const response = await apiClient.patch(`/lists/reorder`, body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+  async (
+    { listId, position }: { position: number; listId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const body = JSON.stringify({ listId, targetPosition: position })
+      const response = await apiClient.patch(`/lists/reorder`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch board list')
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch board list')
+      }
+      return await response.data
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue(error?.message)
     }
-    return await response.data
   }
 )
 
