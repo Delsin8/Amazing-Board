@@ -22,7 +22,9 @@ const BoardPage: React.FC<Props> = () => {
     dispatch(fetchBoard(boardId))
   }, [])
 
-  return <div>123</div>
+  return <Board />
+
+  // return <div>123</div>
 
   // if (isLoading) return <div>Loading...</div>
   // else if (!isLoading && boardData) return <Board {...boardData} />

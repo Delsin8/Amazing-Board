@@ -1,25 +1,29 @@
-import React, { useState } from 'react'
-import { ICard } from '../../../types/commonTypes'
-import Button from '../../../components/ui/Button'
-import { useSocket } from '../../../context/SocketProvider'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from 'app/store'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
-const Card: React.FC<ICard> = ({ id, name }) => {
-  const [localName, setLocalName] = useState(name)
-  const { socket } = useSocket()
+interface DragItem {
+  index: number
+  id: string
+  type: string
+}
 
-  const updateName = () => {
-    socket?.emit('updateCardName', { id, name: localName })
+const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
+  const card = useSelector((state: RootState) => state.board.cards[cardId])
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: cardId, data: { type: 'CARD' } })
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-300 p-4">
-      <input
-        className="font-semibold"
-        value={localName}
-        onChange={e => setLocalName(e.target.value)}
-      />
-      <Button onClick={updateName}>Save</Button>
-      {/* <span className="font-semibold">{name}</span> */}
+    <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
+      <span className="font-semibold">{card?.name}</span>
     </div>
   )
 }

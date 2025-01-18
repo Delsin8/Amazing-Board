@@ -1,4 +1,3 @@
-import { sendBoardUpdate } from '../kafka/producers/boardProducer'
 import Card, { ICard } from '../models/Card'
 import { Request, Response } from 'express'
 
@@ -33,25 +32,17 @@ export const getOneCard = async (req: Request, res: Response) => {
   }
 }
 
-// Socket
-
-export const updateCardName = async ({
-  id,
-  name,
-}: {
-  id: string
-  name: string
-}) => {
+export const reorderCard = async (req: Request, res: Response) => {
+  const { cardId, targetPosition, listId } = req.body
   try {
-    await Card.findByIdAndUpdate(id, { name })
-
-    await sendBoardUpdate('board-consumers', {
-      action: 'update-card-name',
-      // boardId
-      cardId: id,
-      cardName: name,
-    })
-  } catch (error: any) {
-    console.log(error?.message)
+    const card = await Card.findById(cardId)
+    if (card) {
+      card.position = targetPosition
+      card.list = listId
+      await card.save()
+      res.json(card)
+    } else res.status(404).json({ message: 'Card is not found' })
+  } catch (error) {
+    res.status(500).json({ message: "Error updating card's position", error })
   }
 }

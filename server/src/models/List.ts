@@ -4,6 +4,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 interface IList extends Document {
   name: string
   board: mongoose.Types.ObjectId
+  position: number
 }
 
 const listSchema: Schema = new ProjectSchema(
@@ -12,6 +13,10 @@ const listSchema: Schema = new ProjectSchema(
     board: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Board',
+      required: true,
+    },
+    position: {
+      type: Number,
       required: true,
     },
   },
