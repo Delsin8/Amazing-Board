@@ -36,10 +36,17 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
       {...attributes}
       {...listeners}
       style={style}
-      className="flex flex-col gap-4 p-4 rounded-sm border border-red-400"
+      className="flex flex-col gap-4 p-4 rounded-sm border border-red-400 pointer-events-none"
     >
       <Badge>{list?.name}</Badge>
-      <div className="flex flex-col gap-3 w-72">
+      <div
+        className="flex flex-col gap-3 w-72 pointer-events-auto"
+        onClick={e => {
+          console.log(1)
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+      >
         {cards.map(card => (
           <Card cardId={card.id} key={card.id} />
         ))}
