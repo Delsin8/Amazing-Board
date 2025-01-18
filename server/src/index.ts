@@ -5,7 +5,6 @@ import { Server } from 'socket.io'
 
 import app from './app'
 import connectDB from './config/db'
-import { updateCardName } from './controllers/cardController'
 import { initializeKafka } from './kafka/kafkaClient'
 import { initializeBoardConsumer } from './kafka/consumers/boardConsumer'
 
@@ -50,9 +49,16 @@ io.on('connection', socket => {
     console.log(`message: ${value}`)
   })
 
-  socket.on('updateCardName', (value: { id: string; name: string }) => {
-    console.log(`New card: ${value.name}, ${value.id}`)
-    updateCardName(value)
+  // Join a room based on the boardId
+  socket.on('joinBoardRoom', boardId => {
+    socket.join(boardId)
+    console.log(`Socket ${socket.id} joined room: ${boardId}`)
+  })
+
+  // Leave the room when user leaves the board page
+  socket.on('leaveBoardRoom', boardId => {
+    socket.leave(boardId)
+    console.log(`Socket ${socket.id} left room: ${boardId}`)
   })
 
   socket.emit('message_response', 'message from server')

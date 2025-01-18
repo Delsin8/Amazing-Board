@@ -20,13 +20,24 @@ export const initializeBoardConsumer = async (
 
       if (value) {
         const data = JSON.parse(value)
-        switch (data.action) {
-          case 'update-card-name':
-            console.log('action - update-card-name')
-            io.emit(
-              'updatedCardName',
-              `Card ${data.cardId} has been updated with a new name "${data.cardName}"`
-            )
+        console.log(data)
+        switch (data.actionType) {
+          case 'reorder-card':
+            console.log('reorder-card')
+            io.emit('updatedCardPosition', {
+              cardId: data.payload.id,
+              listId: data.payload.list,
+              position: data.payload.position,
+              infoMessage: `Card ${data.payload.name} has been moved by ""`,
+            })
+            break
+          case 'reorder-list':
+            console.log('reorder-list')
+            io.emit('updatedListPosition', {
+              listId: data.payload.id,
+              position: data.payload.position,
+              infoMessage: `List ${data.payload.name} has been moved by ""`,
+            })
             break
 
           default:

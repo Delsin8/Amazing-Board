@@ -104,16 +104,23 @@ export const reorderCard = createAsyncThunk(
     {
       cardId,
       listId,
+      boardId,
       position,
     }: {
       cardId: string
-      position: number
       listId: string
+      boardId: string
+      position: number
     },
     { rejectWithValue }
   ) => {
     try {
-      const body = JSON.stringify({ cardId, listId, targetPosition: position })
+      const body = JSON.stringify({
+        cardId,
+        listId,
+        boardId,
+        position,
+      })
       const response = await apiClient.patch(`/cards/reorder`, body, {
         headers: {
           'Content-Type': 'application/json',
@@ -134,11 +141,15 @@ export const reorderCard = createAsyncThunk(
 export const reorderList = createAsyncThunk(
   'board/reorderList',
   async (
-    { listId, position }: { position: number; listId: string },
+    {
+      listId,
+      boardId,
+      position,
+    }: { listId: string; boardId: string; position: number },
     { rejectWithValue }
   ) => {
     try {
-      const body = JSON.stringify({ listId, targetPosition: position })
+      const body = JSON.stringify({ listId, position, boardId })
       const response = await apiClient.patch(`/lists/reorder`, body, {
         headers: {
           'Content-Type': 'application/json',

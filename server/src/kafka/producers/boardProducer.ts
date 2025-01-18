@@ -1,7 +1,12 @@
 import { getProducer } from '../kafkaClient'
 import KAFKA_TOPICS from '../topics'
 
-export const sendBoardUpdate = async (boardId: string, data: any) => {
+export const sendBoardUpdate = async (
+  actionType: string,
+  boardId: string,
+  senderId: string,
+  payload: any
+) => {
   const producer = getProducer()
 
   if (!producer) {
@@ -12,8 +17,7 @@ export const sendBoardUpdate = async (boardId: string, data: any) => {
     topic: KAFKA_TOPICS.BOARD_UPDATES,
     messages: [
       {
-        key: boardId,
-        value: JSON.stringify(data),
+        value: JSON.stringify({ boardId, senderId, actionType, payload }),
       },
     ],
   })

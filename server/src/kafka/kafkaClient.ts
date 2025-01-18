@@ -29,7 +29,7 @@ export const createConsumer = async (groupId: string): Promise<Consumer> => {
 
   await consumer.connect()
   consumers.set(groupId, consumer)
-  console.log(`Kafka consumer for groupId "${groupId}" connected.`)
+
   return consumer
 }
 

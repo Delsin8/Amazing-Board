@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import React, { useEffect } from 'react'
-import { IBoard } from '../../../types/commonTypes'
-=======
 import React from 'react'
->>>>>>> main
 import List from './List'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { closestCorners, DndContext, DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { SortableContext } from '@dnd-kit/sortable'
 import {
   reorderCard,
   reorderList,
@@ -73,6 +68,7 @@ const Board: React.FC = () => {
         cardId: active.id as string,
         position: newPosition,
         listId: overList.id,
+        boardId: board.id,
       }
 
       dispatch(updateCardPosition({ ...card }))
@@ -104,6 +100,7 @@ const Board: React.FC = () => {
 
       const list = {
         listId: active.id as string,
+        boardId: board.id,
         position: newPosition,
       }
 
