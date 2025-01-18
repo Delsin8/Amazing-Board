@@ -1,5 +1,4 @@
-import React, { useRef } from 'react'
-import { ICard } from '../../../types/commonTypes'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
 import { useSortable } from '@dnd-kit/sortable'
@@ -14,14 +13,8 @@ interface DragItem {
 const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
   const card = useSelector((state: RootState) => state.board.cards[cardId])
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: cardId, data: { type: 'CARD' } })
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: cardId, data: { type: 'CARD' } })
 
   const style = {
     transition,

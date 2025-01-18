@@ -5,11 +5,13 @@ import Board from '../../features/board/components/Board'
 import useFetch from '../../hooks/useFetch'
 import { useDispatch } from 'react-redux'
 import { fetchBoard } from '../../features/board/boardSlice'
+import { useSocket } from '../../context/SocketProvider'
 
 interface Props {}
 
 const BoardPage: React.FC<Props> = () => {
   const { boardId } = useParams()
+  const socket = useSocket()
   const dispatch = useDispatch()
 
   // const [boardData, isLoading, error] = useFetch<IBoard>(
@@ -20,6 +22,12 @@ const BoardPage: React.FC<Props> = () => {
   useEffect(() => {
     // @ts-ignore
     dispatch(fetchBoard(boardId))
+
+    socket.enterBoardRoom(boardId!)
+
+    return () => {
+      socket.leaveBoardRoom(boardId!)
+    }
   }, [])
 
   return <Board />

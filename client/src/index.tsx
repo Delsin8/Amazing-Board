@@ -10,6 +10,7 @@ import { SocketProvider } from './context/SocketProvider'
 import SignInPage from './pages/SignIn'
 import { store } from './app/store'
 import { Provider } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <SocketProvider>
       <RouterProvider router={router} />
+      <ToastContainer />
     </SocketProvider>
   </Provider>
 )

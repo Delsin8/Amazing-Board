@@ -1,11 +1,14 @@
 import dotenv from 'dotenv'
-dotenv.config()
 
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 
 import app from './app'
 import connectDB from './config/db'
+import { initializeKafka } from './kafka/kafkaClient'
+import { initializeBoardConsumer } from './kafka/consumers/boardConsumer'
+
+dotenv.config()
 
 const server = createServer(app)
 const io = new Server(server, {
@@ -20,6 +23,21 @@ const PORT = process.env.PORT || 5000
 
 connectDB()
 
+//
+;(async () => {
+  try {
+    await initializeKafka()
+    console.log('Kafka initialized.')
+
+    await initializeBoardConsumer(message => {
+      console.log(message)
+    })
+  } catch (error) {
+    console.error('Error initializing Kafka:', error)
+    process.exit(1)
+  }
+})()
+
 io.on('connection', socket => {
   // console.log('a user connected - ', socket.id)
 
@@ -31,9 +49,23 @@ io.on('connection', socket => {
     console.log(`message: ${value}`)
   })
 
+  // Join a room based on the boardId
+  socket.on('joinBoardRoom', boardId => {
+    socket.join(boardId)
+    console.log(`Socket ${socket.id} joined room: ${boardId}`)
+  })
+
+  // Leave the room when user leaves the board page
+  socket.on('leaveBoardRoom', boardId => {
+    socket.leave(boardId)
+    console.log(`Socket ${socket.id} left room: ${boardId}`)
+  })
+
   socket.emit('message_response', 'message from server')
 })
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+export { server, io }
