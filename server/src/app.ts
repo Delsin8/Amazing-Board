@@ -9,7 +9,7 @@ import cardRoutes from './routes/cardRoutes'
 const app = express()
 
 // Middleware
-app.use(cors())
+app.use(cors({ exposedHeaders: ['Authorization'] }))
 app.use(express.json())
 
 // Routes

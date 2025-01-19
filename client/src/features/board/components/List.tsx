@@ -12,14 +12,8 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
     (state: RootState) => state.board
   )
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: listId, data: { type: 'LIST' } })
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: listId, data: { type: 'LIST' } })
 
   const cards = Object.values(cardsNormalized)
     .filter(card => card.list === listId)
@@ -42,7 +36,6 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
       <div
         className="flex flex-col gap-3 w-72 pointer-events-auto"
         onClick={e => {
-          console.log(1)
           e.preventDefault()
           e.stopPropagation()
         }}

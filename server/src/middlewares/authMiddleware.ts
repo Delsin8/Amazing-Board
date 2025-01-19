@@ -1,9 +1,9 @@
+import User from '../models/User'
 import Board from '../models/Board'
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
-
-const JWT_SECRET = process.env.JWT_SECRET as string
+import crypto from 'crypto'
 
 interface TokenPayload {
   id: string
@@ -18,17 +18,59 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader = req.headers.authorization
+  const token = req.header('Authorization')?.replace('Bearer ', '')
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!token) {
     next()
     return
   }
 
-  const token = authHeader.split(' ')[1]
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as TokenPayload
+    req.user = { id: decoded.id, username: decoded.username }
+    next()
+  } catch (error) {
+    next()
+  }
+}
+
+// this version of auth middleware doesn't require user to be authenticated and creates temp user if not authenticated
+export const authTempMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.header('Authorization')?.replace('Bearer ', '')
+
+  if (!token) {
+    const tempUser = new User({
+      username: `temp_${crypto.randomBytes(8).toString('hex')}`,
+      isTempUser: true,
+      password: crypto.randomBytes(8).toString('hex'),
+    })
+    await tempUser.save()
+
+    const tempToken = jwt.sign(
+      { id: tempUser._id, username: tempUser.username },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '3d' }
+    )
+
+    res.setHeader('Authorization', `Bearer ${tempToken}`)
+    req.user = tempUser
+
+    next()
+    return
+  }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as TokenPayload
     req.user = { id: decoded.id, username: decoded.username }
     next()
   } catch (error) {
@@ -52,7 +94,10 @@ export const protectedAuthMiddleware = async (
   const token = authHeader.split(' ')[1]
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as TokenPayload
     req.user = { id: decoded.id, username: decoded.username }
     next()
   } catch (error) {

@@ -3,11 +3,32 @@ import User, { IUser } from '../models/User'
 import jwt from 'jsonwebtoken'
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { username, email, password } = req.body
+  const { username, password } = req.body
   try {
-    const user: IUser = new User({ username, email, password })
-    await user.save()
-    res.status(201).json(user)
+    let user: IUser | null = null
+
+    if (req.user?.id) {
+      user = await User.findById(req.user.id)
+      if (user && user.isTempUser) {
+        user.username = username
+        user.isTempUser = false
+        user.password = password
+        await user.save()
+      }
+    }
+    if (!user) {
+      user = new User({ username, password })
+      await user.save()
+    }
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '3d' }
+    )
+
+    res.setHeader('Authorization', `Bearer ${token}`)
+    res.status(200).json({ message: 'Successfully logged in' })
   } catch (error: any) {
     res.status(400).json({ error: error.message })
   }
@@ -33,7 +54,9 @@ export const login = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string,
       { expiresIn: '3d' }
     )
-    res.json({ token })
+
+    res.setHeader('Authorization', `Bearer ${token}`)
+    res.status(200).json({ message: 'Successfully logged in' })
   } catch (error: any) {
     res
       .status(500)
