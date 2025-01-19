@@ -4,12 +4,8 @@ import List from './List'
 import { useDispatch, useSelector } from 'react-redux'
 import { closestCorners, DndContext, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import {
-  reorderCard,
-  reorderList,
-  updateCardPosition,
-  updateListPosition,
-} from '../boardSlice'
+import { updateCardPosition, updateListPosition } from '../boardSlice'
+import { reorderCard, reorderList } from '../boardThunks'
 import calculateDndNewPosition from '../../../utils/calculateDnDNewPosition'
 import {
   selectDenormalizedBoard,

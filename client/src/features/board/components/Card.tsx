@@ -5,9 +5,11 @@ import { RootState } from 'app/store'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Modal from '../../../components/ui/Modal'
+import CardModal from '../modals/CardModal'
 
 const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
   const card = useSelector((state: RootState) => state.board.cards[cardId])
+  const { board } = useSelector((state: RootState) => state.board)
 
   const [openPopup, setOpenPopup] = useState(false)
 
@@ -21,8 +23,7 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
 
   return (
     <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
-      {openPopup ? 'true' : 'false'}
-      {/* <span className="font-semibold">{card?.name}</span> */}
+      <span className="font-semibold">{card?.name}</span>
       <div onPointerDown={e => e.stopPropagation()}>
         <button
           className="pointer-events-auto"
@@ -33,7 +34,11 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
 
         {openPopup &&
           ReactDOM.createPortal(
-            <Modal onClose={() => setOpenPopup(false)}>Smile</Modal>,
+            <CardModal
+              onClose={() => setOpenPopup(false)}
+              {...card}
+              boardId={board!.id}
+            />,
             document.getElementById('modal') as HTMLDivElement
           )}
       </div>

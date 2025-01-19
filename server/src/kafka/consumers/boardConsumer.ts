@@ -39,6 +39,14 @@ export const initializeBoardConsumer = async (
               infoMessage: `List ${data.payload.name} has been moved by ""`,
             })
             break
+          case 'rename-card':
+            console.log('rename-card')
+            io.emit('updatedCardName', {
+              cardId: data.payload.id,
+              name: data.payload.name,
+              infoMessage: `Card has been renamed to "${data.payload.name}"`,
+            })
+            break
 
           default:
             console.log('no action')

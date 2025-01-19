@@ -1,4 +1,5 @@
 import {
+  updateCardName,
   updateCardPosition,
   updateListPosition,
 } from '../features/board/boardSlice'
@@ -9,7 +10,6 @@ import { io, Socket } from 'socket.io-client'
 
 interface ServerToClientEvents {
   message_response: (value: string) => void
-  updatedCardName: (value: string) => void
   updatedCardPosition: (value: {
     cardId: string
     listId: string
@@ -19,6 +19,11 @@ interface ServerToClientEvents {
   updatedListPosition: (value: {
     listId: string
     position: number
+    infoMessage: string
+  }) => void
+  updatedCardName: (value: {
+    cardId: string
+    name: string
     infoMessage: string
   }) => void
 }
@@ -65,12 +70,17 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch(updateListPosition(list))
       toast.success(infoMessage)
     })
+    socketRef.current.on('updatedCardName', ({ infoMessage, ...card }) => {
+      dispatch(updateCardName(card))
+      toast.success(infoMessage)
+    })
   }
 
   const leaveBoardRoom = (boardId: string) => {
     socketRef.current.emit('leaveBoardRoom', boardId)
     socketRef.current.removeAllListeners('updatedCardPosition')
     socketRef.current.removeAllListeners('updatedListPosition')
+    socketRef.current.removeAllListeners('updatedCardName')
   }
 
   return (

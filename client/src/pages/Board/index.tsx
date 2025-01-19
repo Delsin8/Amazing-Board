@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom'
 import Board from '../../features/board/components/Board'
 import useFetch from '../../hooks/useFetch'
 import { useDispatch } from 'react-redux'
-import { fetchBoard } from '../../features/board/boardSlice'
+import { fetchBoard } from '../../features/board/boardThunks'
 import { useSocket } from '../../context/SocketProvider'
 
 interface Props {}

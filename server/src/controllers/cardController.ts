@@ -55,3 +55,24 @@ export const reorderCard = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error updating card's position", error })
   }
 }
+
+export const renameCard = async (req: Request, res: Response) => {
+  const { cardId, boardId, name } = req.body
+  try {
+    const card = await Card.findById(cardId)
+    if (card) {
+      card.name = name
+      await card.save()
+
+      res.json(card)
+
+      const roomInfo = io.sockets.adapter.rooms.get(boardId)
+      if (roomInfo) {
+        const userIds = Array.from(roomInfo)
+        if (userIds.length) sendBoardUpdate('rename-card', boardId, '', card)
+      }
+    } else res.status(404).json({ message: 'Card is not found' })
+  } catch (error) {
+    res.status(500).json({ message: "Error updating card's position", error })
+  }
+}
