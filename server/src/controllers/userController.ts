@@ -9,7 +9,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     if (req.user?.id) {
       user = await User.findById(req.user.id)
-      if (user) {
+      if (user && user.isTempUser) {
         user.username = username
         user.isTempUser = false
         user.password = password
