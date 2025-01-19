@@ -1,5 +1,5 @@
 import {
-  authMiddleware,
+  authTempMiddleware,
   isBoardOwner,
   protectedAuthMiddleware,
 } from '../middlewares/authMiddleware'
@@ -14,8 +14,8 @@ import express from 'express'
 
 const router = express.Router()
 
-router.post('/', authMiddleware, createBoard)
-router.get('/:id', authMiddleware, getOneBoard)
+router.post('/', authTempMiddleware, createBoard)
+router.get('/:id', authTempMiddleware, getOneBoard)
 router.get('/', getAllBoards)
 
 router.post(

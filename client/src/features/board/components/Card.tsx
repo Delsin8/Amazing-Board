@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import Modal from '../../../components/ui/Modal'
 import CardModal from '../modals/CardModal'
 
 const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
