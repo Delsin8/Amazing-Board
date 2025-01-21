@@ -5,6 +5,7 @@ interface IList extends Document {
   name: string
   board: mongoose.Types.ObjectId
   position: number
+  color: string
 }
 
 const listSchema: Schema = new ProjectSchema(
@@ -18,6 +19,11 @@ const listSchema: Schema = new ProjectSchema(
     position: {
       type: Number,
       required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+      default: '#6c757d',
     },
   },
   { timestamps: true }

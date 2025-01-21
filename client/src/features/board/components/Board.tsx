@@ -117,8 +117,6 @@ const Board: React.FC = () => {
       <h1 className="font-bold text-3xl">{board?.title}</h1>
       <div className="mb-4">{board?.description}</div>
 
-      <Card cardId={cards[0].id} />
-
       <ol className="w-100 flex gap-4 bg-slate-100 rounded-md p-4">
         <DndContext
           collisionDetection={closestCorners}

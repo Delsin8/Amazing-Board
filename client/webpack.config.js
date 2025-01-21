@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const dotenv = require('dotenv')
 const webpack = require('webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const env = dotenv.config().parsed || {}
 
@@ -10,7 +11,10 @@ const envKeys = Object.keys(env).reduce((acc, key) => {
   return acc
 }, {})
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
+
 module.exports = {
+  mode: isDevelopment ? 'development' : 'production',
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -19,10 +23,20 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.svg', '.scss'],
   },
   module: {
     rules: [
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: { svgo: false },
+          },
+          { loader: 'file-loader' },
+        ],
+      },
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
@@ -36,21 +50,21 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
-      },
-      {
-        test: /\module.scss$/,
+        test: /\.module.scss$/,
         use: [
-          'style-loader',
+          isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: '[local]___[hash:base64:8]',
+                localIdentName: '[local]___[hash:base64:5]',
+                exportLocalsConvention: 'camelCase',
               },
+              importLoaders: 2,
+              sourceMap: isDevelopment,
             },
           },
+          { loader: 'postcss-loader', options: { sourceMap: isDevelopment } },
           {
             loader: 'sass-loader',
             options: {
@@ -61,7 +75,17 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        exclude: /\.module.scss$/,
+        use: [
+          isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
@@ -70,11 +94,21 @@ module.exports = {
       template: './public/index.html',
     }),
     new webpack.DefinePlugin(envKeys),
+    ...(isDevelopment
+      ? [new webpack.HotModuleReplacementPlugin()]
+      : [
+          new MiniCssExtractPlugin({
+            filename: '[name].[contenthash].css',
+          }),
+        ]),
   ],
   devServer: {
     static: path.join(__dirname, 'public'),
     historyApiFallback: true,
     port: 3000,
     open: true,
+    hot: true,
+    watchFiles: ['src/**/*.scss'],
   },
+  devtool: isDevelopment ? 'inline-source-map' : 'source-map',
 }

@@ -1,6 +1,7 @@
 import {
   updateCardName,
   updateCardPosition,
+  updateListColor,
   updateListPosition,
 } from '../features/board/boardSlice'
 import React, { createContext, useContext, useEffect, useRef } from 'react'
@@ -24,6 +25,11 @@ interface ServerToClientEvents {
   updatedCardName: (value: {
     cardId: string
     name: string
+    infoMessage: string
+  }) => void
+  updatedListColor: (value: {
+    listId: string
+    color: string
     infoMessage: string
   }) => void
 }
@@ -72,6 +78,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     })
     socketRef.current.on('updatedCardName', ({ infoMessage, ...card }) => {
       dispatch(updateCardName(card))
+      toast.success(infoMessage)
+    })
+    socketRef.current.on('updatedListColor', ({ infoMessage, ...list }) => {
+      dispatch(updateListColor(list))
       toast.success(infoMessage)
     })
   }

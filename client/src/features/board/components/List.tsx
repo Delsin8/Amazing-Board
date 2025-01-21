@@ -1,16 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
+import * as styles from '../styles.module.scss'
+import ReactDOM from 'react-dom'
 import Card from './Card'
 import Badge from '../../../components/ui/Badge/Badge'
 import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { EditIcon } from '../../../assets/icons'
+import ListModal from '../modals/ListModal'
+import classNames from 'classnames'
 
 const List: React.FC<{ listId: string }> = ({ listId }) => {
   const list = useSelector((state: RootState) => state.board.lists[listId])
   const { cards: cardsNormalized } = useSelector(
     (state: RootState) => state.board
   )
+
+  const [openPopup, setOpenPopup] = useState(false)
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: listId, data: { type: 'LIST' } })
@@ -30,11 +37,35 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
       {...attributes}
       {...listeners}
       style={style}
-      className="flex flex-col gap-4 p-4 rounded-sm border border-red-400 pointer-events-none"
+      className={classNames('flex flex-col gap-4 p-4')}
     >
-      <Badge>{list?.name}</Badge>
       <div
-        className="flex flex-col gap-3 w-72 pointer-events-auto"
+        className={classNames(
+          styles['hover-icon-wrapper'],
+          'flex justify-between gap-2'
+        )}
+      >
+        <Badge color={list.color}>{list?.name}</Badge>
+        <div
+          onPointerDown={e => e.stopPropagation()}
+          onClick={() => setOpenPopup(true)}
+          className="flex items-center"
+        >
+          <EditIcon
+            className="h-6 w-6 p-1 rounded-md opacity-0"
+            style={{ background: list.color }}
+          />
+
+          {openPopup &&
+            ReactDOM.createPortal(
+              <ListModal onClose={() => setOpenPopup(false)} {...list} />,
+              document.getElementById('modal') as HTMLDivElement
+            )}
+        </div>
+      </div>
+
+      <div
+        className="flex flex-col gap-3 w-72"
         onClick={e => {
           e.preventDefault()
           e.stopPropagation()

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   IBoardNormalized,
   ICard,
+  IList,
   IListNormalized,
 } from '../../types/commonTypes'
 import { normalize } from 'normalizr'
@@ -55,6 +56,15 @@ const boardSlice = createSlice({
     ) {
       state.cards[action.payload.cardId].name = action.payload.name
     },
+    updateListItem(state, action: PayloadAction<IListNormalized>) {
+      state.lists[action.payload.id] = action.payload
+    },
+    updateListColor(
+      state,
+      action: PayloadAction<{ listId: string; color: string }>
+    ) {
+      state.lists[action.payload.listId].color = action.payload.color
+    },
   },
   extraReducers: builder => {
     builder
@@ -82,5 +92,7 @@ export const {
   updateListPosition,
   updateCardPosition,
   updateCardName,
+  updateListItem,
+  updateListColor,
 } = boardSlice.actions
 export default boardSlice.reducer

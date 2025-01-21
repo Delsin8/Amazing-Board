@@ -1,8 +1,13 @@
 declare module '*.module.scss' {
   const classes: { [key: string]: string }
-  export default classes
+  export = classes
 }
 
-console.log(1)
-
-// asdsaasd asd asd asd as
+declare module '*.svg' {
+  import * as React from 'react'
+  export const ReactComponent: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement>
+  >
+  const src: string
+  export default src
+}

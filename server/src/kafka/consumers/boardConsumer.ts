@@ -47,6 +47,14 @@ export const initializeBoardConsumer = async (
               infoMessage: `Card has been renamed to "${data.payload.name}"`,
             })
             break
+          case 'list-color-update':
+            console.log('list-color-update')
+            io.emit('updatedListColor', {
+              listId: data.payload.id,
+              color: data.payload.color,
+              infoMessage: `Card has been renamed to "${data.payload.name}"`,
+            })
+            break
 
           default:
             console.log('no action')

@@ -4,9 +4,9 @@ import List, { IList } from '../models/List'
 import { Request, Response } from 'express'
 
 export const createList = async (req: Request, res: Response) => {
-  const { name } = req.body
+  const { name, boardId, color } = req.body
   try {
-    const list: IList = new List({ name })
+    const list: IList = new List({ name, board: boardId, color })
     await list.save()
     res.status(201).json(list)
   } catch (error: any) {
@@ -47,6 +47,27 @@ export const reorderList = async (req: Request, res: Response) => {
       if (roomInfo) {
         const userIds = Array.from(roomInfo)
         if (userIds.length) sendBoardUpdate('reorder-list', boardId, '', list)
+      }
+    } else res.status(404).json({ message: 'List is not found' })
+  } catch (error) {
+    res.status(500).json({ message: "Error updating list's position", error })
+  }
+}
+
+export const changeListColor = async (req: Request, res: Response) => {
+  const { listId, color, boardId } = req.body
+  try {
+    const list = await List.findById(listId)
+    if (list) {
+      list.color = color
+      await list.save()
+      res.json(list)
+
+      const roomInfo = io.sockets.adapter.rooms.get(boardId)
+      if (roomInfo) {
+        const userIds = Array.from(roomInfo)
+        if (userIds.length)
+          sendBoardUpdate('list-color-update', boardId, '', list)
       }
     } else res.status(404).json({ message: 'List is not found' })
   } catch (error) {

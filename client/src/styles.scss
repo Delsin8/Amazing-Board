@@ -1,0 +1,12 @@
+@use 'tailwindcss/base';
+@use 'tailwindcss/components';
+@use 'tailwindcss/utilities';
+
+body {
+  width: 90vw;
+  margin: 1.5rem auto;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.75);
+}

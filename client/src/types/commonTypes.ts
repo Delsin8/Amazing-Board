@@ -16,6 +16,8 @@ export interface IList {
   id: string
   name: string
   cards: ICard[]
+  board: string
+  color: string
   position: number
 }
 

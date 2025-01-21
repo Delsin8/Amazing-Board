@@ -1,4 +1,5 @@
 import {
+  changeListColor,
   createList,
   getAllLists,
   getOneList,
@@ -13,5 +14,6 @@ router.get('/:id', getOneList)
 router.get('/', getAllLists)
 
 router.patch('/reorder', reorderList)
+router.patch('/change-color', changeListColor)
 
 export default router

@@ -109,3 +109,61 @@ export const sendUpdateCardName = createAsyncThunk(
     }
   }
 )
+
+export const sendUpdateListName = createAsyncThunk(
+  'board/updateListName',
+  async (
+    {
+      listId,
+      boardId,
+      name,
+    }: { listId: string; boardId: string; name: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const body = JSON.stringify({ listId, boardId, name })
+      const response = await apiClient.patch(`/lists/rename`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update name of the list')
+      }
+      return await response.data
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue(error?.message)
+    }
+  }
+)
+
+export const sendUpdateListColor = createAsyncThunk(
+  'board/updateListColor',
+  async (
+    {
+      listId,
+      boardId,
+      color,
+    }: { listId: string; boardId: string; color: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const body = JSON.stringify({ listId, boardId, color })
+      const response = await apiClient.patch(`/lists/change-color`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update color of the list')
+      }
+      return await response.data
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue(error?.message)
+    }
+  }
+)

@@ -4,6 +4,9 @@ import { ICard } from '../../../types/commonTypes'
 import { useDispatch } from 'react-redux'
 import { sendUpdateCardName } from '../boardThunks'
 import { updateCardName } from '../boardSlice'
+import { TitleIcon } from '../../../assets/icons'
+import InputText from '../../../components/ui/InputText/InputText'
+import Button from '../../../components/ui/Button'
 
 interface Props extends ICard {
   boardId: string
@@ -31,9 +34,19 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
 
   return (
     <Modal onClose={onClose}>
-      <div className="flex gap-3">
-        <input value={cardName} onChange={e => setCardName(e.target.value)} />
-        <button onClick={handleUpdateCardName}>Update card name</button>
+      <div className="flex flex-col gap-5">
+        <div className="flex items-center gap-1">
+          <TitleIcon />
+          <InputText
+            value={cardName}
+            onChange={setCardName}
+            onBlur={handleUpdateCardName}
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <Button onClick={onClose}>Close</Button>
+        </div>
       </div>
     </Modal>
   )

@@ -1,0 +1,11 @@
+.hover-icon-wrapper {
+  &:hover {
+    svg {
+      opacity: 0.875;
+
+      &:hover {
+        opacity: 0.75;
+      }
+    }
+  }
+}
