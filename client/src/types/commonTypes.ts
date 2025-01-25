@@ -31,3 +31,8 @@ export interface ICard {
   position: number
   list: string
 }
+
+export interface DropIndicator {
+  listId: string
+  index: number
+}

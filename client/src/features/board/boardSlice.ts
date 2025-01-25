@@ -40,12 +40,22 @@ const boardSlice = createSlice({
       state,
       action: PayloadAction<{
         cardId: string
-        listId: string
+        targetListId: string
+        sourceListId: string
         position: number
       }>
     ) {
-      state.cards[action.payload.cardId].position = action.payload.position
-      state.cards[action.payload.cardId].list = action.payload.listId
+      const { cardId, sourceListId, targetListId, position } = action.payload
+
+      state.cards[cardId].position = position
+      state.cards[cardId].list = targetListId
+
+      if (sourceListId === targetListId) return
+
+      state.lists[sourceListId].cards = state.lists[sourceListId].cards.filter(
+        card => card !== cardId
+      )
+      state.lists[targetListId].cards.push(cardId)
     },
     updateCardName(
       state,

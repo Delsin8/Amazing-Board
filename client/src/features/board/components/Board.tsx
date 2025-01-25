@@ -1,17 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import List from './List'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { closestCorners, DndContext, DragEndEvent } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
+import {
+  closestCorners,
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+} from '@dnd-kit/core'
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+} from '@dnd-kit/sortable'
 import { updateCardPosition, updateListPosition } from '../boardSlice'
-import { reorderCard, reorderList } from '../boardThunks'
-import calculateDndNewPosition from '../../../utils/calculateDnDNewPosition'
+import {
+  calculateDndNewPosition,
+  calculateDndCardHover,
+} from '../../../utils/DnDPositions'
 import {
   selectDenormalizedBoard,
   selectDenormalizedCards,
 } from '../boardSelectors'
-import Card from './Card'
 
 const Board: React.FC = () => {
   const dispatch = useDispatch()
@@ -19,18 +28,68 @@ const Board: React.FC = () => {
   const board = useSelector(selectDenormalizedBoard)
   const cards = useSelector(selectDenormalizedCards)
 
+  const [overInfo, setOverInfo] = useState<{
+    listId: string
+    listIndex: number
+    cardId: string
+    cardIndex: number
+    position: 'above' | 'below'
+  } | null>(null)
+
   if (!board) return null
 
-  console.log(board)
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event
+    if (!active.id || !over?.id || active.id === over.id) return
+
+    if (active.data.current?.type === 'card') {
+      const overList = board.lists.find(list =>
+        list.cards.some(card => card.id === over.id)
+      )
+      const activeList = board.lists.find(list =>
+        list.cards.some(card => card.id === active.id)
+      )
+
+      if (!overList?.id || !activeList?.id) return setOverInfo(null)
+
+      const isSameList = overList === activeList
+
+      const listCards = cards
+        .filter(card => card.list === overList.id)
+        .sort((a, b) => a.position - b.position)
+
+      const overCardIndex = listCards.findIndex(card => card.id === over.id)
+      const activeCardIndex = listCards.findIndex(card => card.id === active.id)
+
+      const newPosition = calculateDndCardHover(
+        listCards,
+        overCardIndex,
+        activeCardIndex,
+        isSameList
+      )
+
+      setOverInfo({
+        listId: overList.id,
+        listIndex: board.lists.indexOf(overList),
+        cardId: listCards[overCardIndex].id,
+        cardIndex: overCardIndex,
+        position: newPosition,
+      })
+    }
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
+    setOverInfo(null)
+
     if (!active.id || !over?.id || active.id === over.id) return
 
-    if (active.data.current?.type === 'CARD') {
+    if (active.data.current?.type === 'card') {
       const overList = board.lists.find(list =>
-        list.cards.some(card => card.id === over.id)
+        over.data.current?.type === 'list'
+          ? list.id === over.id
+          : list.cards.some(card => card.id === over.id)
       )
       const activeList = board.lists.find(list =>
         list.cards.some(card => card.id === active.id)
@@ -64,19 +123,23 @@ const Board: React.FC = () => {
       const card = {
         cardId: active.id as string,
         position: newPosition,
-        listId: overList.id,
+        targetListId: overList.id,
+        sourceListId: activeList.id,
         boardId: board.id,
       }
 
       dispatch(updateCardPosition({ ...card }))
 
       // @ts-ignore
-      dispatch(reorderCard({ ...card }))
-        .unwrap()
-        .catch(() => {
-          dispatch(updateCardPosition({ ...previousCardState }))
-        })
-    } else if (active.data.current?.type === 'LIST') {
+      // dispatch(reorderCard({ ...card }))
+      //   .unwrap()
+      //   .catch(() => {
+      //     dispatch(updateCardPosition({ ...previousCardState }))
+      //   })
+    } else if (
+      active.data.current?.type === 'list' &&
+      over.data.current?.type === 'list'
+    ) {
       const overListIndex = board.lists.findIndex(item => item.id === over.id)
       const activeListIndex = board.lists.findIndex(
         item => item.id === active.id
@@ -104,11 +167,11 @@ const Board: React.FC = () => {
       dispatch(updateListPosition({ ...list }))
 
       // @ts-ignore
-      dispatch(reorderList({ ...list }))
-        .unwrap()
-        .catch(() => {
-          dispatch(updateListPosition({ ...previousListState }))
-        })
+      // dispatch(reorderList({ ...list }))
+      //   .unwrap()
+      //   .catch(() => {
+      //     dispatch(updateListPosition({ ...previousListState }))
+      //   })
     }
   }
 
@@ -121,10 +184,14 @@ const Board: React.FC = () => {
         <DndContext
           collisionDetection={closestCorners}
           onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
         >
-          <SortableContext items={[...board.lists, ...cards]}>
+          <SortableContext
+            strategy={horizontalListSortingStrategy}
+            items={[...board.lists]}
+          >
             {board.lists.map(list => (
-              <List listId={list.id} key={list.id} />
+              <List listId={list.id} overInfo={overInfo} key={list.id} />
             ))}
           </SortableContext>
         </DndContext>

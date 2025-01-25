@@ -5,13 +5,29 @@ import Card from './Card'
 import Badge from '../../../components/ui/Badge/Badge'
 import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
-import { useSortable } from '@dnd-kit/sortable'
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { EditIcon } from '../../../assets/icons'
 import ListModal from '../modals/ListModal'
 import classNames from 'classnames'
+import { useDroppable } from '@dnd-kit/core'
 
-const List: React.FC<{ listId: string }> = ({ listId }) => {
+interface Props {
+  listId: string
+  overInfo: {
+    listId: string
+    listIndex: number
+    cardId: string
+    cardIndex: number
+    position: 'above' | 'below'
+  } | null
+}
+
+const List: React.FC<Props> = ({ listId, overInfo }) => {
   const list = useSelector((state: RootState) => state.board.lists[listId])
   const { cards: cardsNormalized } = useSelector(
     (state: RootState) => state.board
@@ -19,8 +35,21 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
 
   const [openPopup, setOpenPopup] = useState(false)
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: listId, data: { type: 'LIST' } })
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setNodeRefSortable,
+    transform,
+    transition,
+  } = useSortable({ id: listId, data: { type: 'list' } })
+
+  const { setNodeRef: setNodeRefDroppable } = useDroppable({
+    id: list.id,
+    data: {
+      type: 'list',
+      list,
+    },
+  })
 
   const cards = Object.values(cardsNormalized)
     .filter(card => card.list === listId)
@@ -29,6 +58,11 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
+  }
+
+  const setNodeRef = (element: HTMLElement | null) => {
+    setNodeRefSortable(element)
+    setNodeRefDroppable(element)
   }
 
   return (
@@ -42,7 +76,7 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
       <div
         className={classNames(
           styles['hover-icon-wrapper'],
-          'flex justify-between gap-2'
+          'flex justify-between gap-2 touch-none'
         )}
       >
         <Badge color={list.color}>{list?.name}</Badge>
@@ -71,8 +105,25 @@ const List: React.FC<{ listId: string }> = ({ listId }) => {
           e.stopPropagation()
         }}
       >
-        {cards.map(card => (
-          <Card cardId={card.id} key={card.id} />
+        {cards.map((card, index) => (
+          <Card
+            cardId={card.id}
+            showDropIndicatorAbove={
+              list.id === overInfo?.listId &&
+              Number.isFinite(overInfo.cardIndex)
+                ? Math.abs(overInfo.cardIndex as number) === index &&
+                  overInfo.position === 'above'
+                : false
+            }
+            showDropIndicatorBelow={
+              list.id === overInfo?.listId &&
+              Number.isFinite(overInfo.cardIndex)
+                ? Math.abs(overInfo.cardIndex as number) === index &&
+                  overInfo.position === 'below'
+                : false
+            }
+            key={card.id}
+          />
         ))}
       </div>
       <button>Add card</button>

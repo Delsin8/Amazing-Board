@@ -13,7 +13,8 @@ interface ServerToClientEvents {
   message_response: (value: string) => void
   updatedCardPosition: (value: {
     cardId: string
-    listId: string
+    targetListId: string
+    sourceListId: string
     position: number
     infoMessage: string
   }) => void
