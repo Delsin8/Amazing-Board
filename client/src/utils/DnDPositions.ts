@@ -1,12 +1,16 @@
-const calculateDndNewPosition = <T extends { id: string; position: number }>(
+export const calculateDndNewPosition = <
+  T extends { id: string; position: number }
+>(
   items: T[],
   overItemIndex: number,
   activeItemIndex: number,
   isSameList: boolean
 ) => {
-  let newPos = 0
+  let newPos = 1000
   const prevCardIndex = overItemIndex - 1
   const nextCardIndex = overItemIndex + 1
+
+  if (!items.length) return newPos
 
   if (!isSameList) {
     if (!items[prevCardIndex]) newPos = items[overItemIndex].position / 2
@@ -35,4 +39,24 @@ const calculateDndNewPosition = <T extends { id: string; position: number }>(
   return newPos
 }
 
-export default calculateDndNewPosition
+export const calculateDndCardHover = <
+  T extends { id: string; position: number }
+>(
+  items: T[],
+  overItemIndex: number,
+  activeItemIndex: number,
+  isSameList: boolean
+) => {
+  let newPos: 'below' | 'above' = 'below'
+  const prevCardIndex = overItemIndex - 1
+  const nextCardIndex = overItemIndex + 1
+
+  if (!isSameList) {
+    newPos = 'below'
+  } else {
+    if (activeItemIndex > overItemIndex) newPos = 'above'
+    else newPos = 'below'
+  }
+
+  return newPos
+}

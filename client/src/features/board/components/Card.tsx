@@ -3,13 +3,22 @@ import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import CardModal from '../modals/CardModal'
 import { EditIcon } from '../../../assets/icons'
 import classNames from 'classnames'
+import { useDraggable, useDroppable } from '@dnd-kit/core'
 
-const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
+interface Props {
+  cardId: string
+  showDropIndicatorAbove: boolean
+  showDropIndicatorBelow: boolean
+}
+
+const Card: React.FC<Props> = ({
+  cardId,
+  showDropIndicatorAbove,
+  showDropIndicatorBelow,
+}) => {
   const card = useSelector((state: RootState) => state.board.cards[cardId])
   const color = useSelector(
     (state: RootState) => state.board.lists[card.list]
@@ -21,16 +30,35 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
   const {
     attributes,
     listeners,
-    setNodeRef,
+    setNodeRef: setDraggableRef,
     transform,
-    transition,
-    // isDragging,
-  } = useSortable({ id: cardId, data: { type: 'CARD' } })
+    isDragging,
+  } = useDraggable({
+    id: card.id,
+    data: {
+      type: 'card',
+      card,
+    },
+  })
 
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id: card.id,
+    data: {
+      type: 'card',
+      card,
+    },
+  })
+
+  const setNodeRef = (element: HTMLElement | null) => {
+    setDraggableRef(element)
+    setDroppableRef(element)
   }
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined
 
   return (
     <div
@@ -40,10 +68,13 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
       style={style}
       className={classNames(
         styles['hover-icon-wrapper'],
-        'border border-gray-400 rounded-lg p-4 shadow-sm select-none',
-        'flex justify-between gap-2'
+        'relative border border-gray-400 rounded-lg p-4 shadow-sm select-none',
+        'flex justify-between gap-2  touch-none'
       )}
     >
+      {showDropIndicatorAbove && (
+        <div className="absolute -top-2 left-0 right-0 h-1 bg-blue-500 rounded" />
+      )}
       <div className="font-semibold">{card?.name}</div>
 
       <div onPointerDown={e => e.stopPropagation()}>
@@ -63,6 +94,10 @@ const Card: React.FC<{ cardId: string }> = ({ cardId }) => {
             document.getElementById('modal') as HTMLDivElement
           )}
       </div>
+
+      {showDropIndicatorBelow && (
+        <div className="absolute -bottom-2 left-0 right-0 h-1 bg-blue-500 rounded" />
+      )}
     </div>
   )
 }
