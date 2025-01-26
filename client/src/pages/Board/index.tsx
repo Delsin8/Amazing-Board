@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { IBoard } from '../../types/commonTypes'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import Board from '../../features/board/components/Board'
-import useFetch from '../../hooks/useFetch'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { fetchBoard } from '../../features/board/boardThunks'
 import { useSocket } from '../../context/SocketProvider'
+import { RootState } from '../../app/store'
 
 interface Props {}
 
@@ -13,6 +12,7 @@ const BoardPage: React.FC<Props> = () => {
   const { boardId } = useParams()
   const socket = useSocket()
   const dispatch = useDispatch()
+  const { user } = useSelector((state: RootState) => state.user)
 
   // const [boardData, isLoading, error] = useFetch<IBoard>(
   //   `${location.pathname}`,
@@ -23,12 +23,12 @@ const BoardPage: React.FC<Props> = () => {
     // @ts-ignore
     dispatch(fetchBoard(boardId))
 
-    socket.enterBoardRoom(boardId!)
+    if (user) socket.enterBoardRoom(boardId!, user.id)
 
     return () => {
       socket.leaveBoardRoom(boardId!)
     }
-  }, [])
+  }, [user])
 
   return <Board />
 

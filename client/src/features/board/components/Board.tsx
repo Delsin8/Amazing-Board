@@ -21,6 +21,7 @@ import {
   selectDenormalizedBoard,
   selectDenormalizedCards,
 } from '../boardSelectors'
+import apiClient from '../../../api/apiClient'
 
 const Board: React.FC = () => {
   const dispatch = useDispatch()

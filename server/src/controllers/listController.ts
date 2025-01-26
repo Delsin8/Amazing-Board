@@ -1,5 +1,5 @@
 import { sendBoardUpdate } from '../kafka/producers/boardProducer'
-import { io } from '../index'
+import { io, userSocketMap } from '../index'
 import List, { IList } from '../models/List'
 import { Request, Response } from 'express'
 
@@ -45,8 +45,10 @@ export const reorderList = async (req: Request, res: Response) => {
 
       const roomInfo = io.sockets.adapter.rooms.get(boardId)
       if (roomInfo) {
+        const senderSocketId = userSocketMap.get(req.user?.id || '')
         const userIds = Array.from(roomInfo)
-        if (userIds.length) sendBoardUpdate('reorder-list', boardId, '', list)
+        if (userIds.length)
+          sendBoardUpdate('reorder-list', boardId, senderSocketId, list)
       }
     } else res.status(404).json({ message: 'List is not found' })
   } catch (error) {
@@ -65,9 +67,10 @@ export const changeListColor = async (req: Request, res: Response) => {
 
       const roomInfo = io.sockets.adapter.rooms.get(boardId)
       if (roomInfo) {
+        const senderSocketId = userSocketMap.get(req.user?.id || '')
         const userIds = Array.from(roomInfo)
         if (userIds.length)
-          sendBoardUpdate('list-color-update', boardId, '', list)
+          sendBoardUpdate('list-color-update', boardId, senderSocketId, list)
       }
     } else res.status(404).json({ message: 'List is not found' })
   } catch (error) {

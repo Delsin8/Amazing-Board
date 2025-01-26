@@ -1,3 +1,4 @@
+import { RootState } from '../app/store'
 import {
   updateCardName,
   updateCardPosition,
@@ -5,7 +6,7 @@ import {
   updateListPosition,
 } from '../features/board/boardSlice'
 import React, { createContext, useContext, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { io, Socket } from 'socket.io-client'
 
@@ -38,13 +39,13 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   message: (value: string) => void
   updateCardName: (value: { id: string; name: string }) => void
-  joinBoardRoom: (boardId: string) => void
+  joinBoardRoom: (value: { boardId: string; userId: string }) => void
   leaveBoardRoom: (boardId: string) => void
 }
 
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
-  enterBoardRoom: (boardId: string) => void
+  enterBoardRoom: (boardId: string, userId: string) => void
   leaveBoardRoom: (boardId: string) => void
 }
 
@@ -58,6 +59,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       path: '/socket-connection',
     })
   )
+
+  const user = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [])
 
   const enterBoardRoom = (boardId: string) => {
-    socketRef.current.emit('joinBoardRoom', boardId)
+    socketRef.current.emit('joinBoardRoom', { boardId, userId: user.user!.id })
     socketRef.current.on('updatedCardPosition', ({ infoMessage, ...card }) => {
       dispatch(updateCardPosition(card))
       toast.success(infoMessage)

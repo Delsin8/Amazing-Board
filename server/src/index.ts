@@ -38,24 +38,31 @@ connectDB()
   }
 })()
 
+const userSocketMap = new Map()
+
 io.on('connection', socket => {
   // console.log('a user connected - ', socket.id)
 
-  // socket.on('disconnect', () => {
-  //   console.log(`user disconnected - ${socket.id}`)
-  // })
+  socket.on('disconnect', () => {
+    for (const [userId, socketId] of userSocketMap.entries()) {
+      if (socketId === socket.id) {
+        userSocketMap.delete(userId)
+        break
+      }
+    }
+    console.log(`user disconnected - ${socket.id}`)
+  })
 
   socket.on('message', (value: string) => {
     console.log(`message: ${value}`)
   })
 
-  // Join a room based on the boardId
-  socket.on('joinBoardRoom', boardId => {
+  socket.on('joinBoardRoom', ({ boardId, userId }) => {
+    userSocketMap.set(userId, socket.id)
     socket.join(boardId)
-    console.log(`Socket ${socket.id} joined room: ${boardId}`)
+    console.log(`Socket ${socket.userId} joined room: ${boardId}`)
   })
 
-  // Leave the room when user leaves the board page
   socket.on('leaveBoardRoom', boardId => {
     socket.leave(boardId)
     console.log(`Socket ${socket.id} left room: ${boardId}`)
@@ -68,4 +75,4 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
-export { server, io }
+export { server, io, userSocketMap }

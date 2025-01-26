@@ -1,4 +1,4 @@
-import { io } from '../index'
+import { io, userSocketMap } from '../index'
 import { sendBoardUpdate } from '../kafka/producers/boardProducer'
 import Card, { ICard } from '../models/Card'
 import { Request, Response } from 'express'
@@ -47,8 +47,10 @@ export const reorderCard = async (req: Request, res: Response) => {
 
       const roomInfo = io.sockets.adapter.rooms.get(boardId)
       if (roomInfo) {
+        const senderSocketId = userSocketMap.get(req.user?.id || '')
         const userIds = Array.from(roomInfo)
-        if (userIds.length) sendBoardUpdate('reorder-card', boardId, '', card)
+        if (userIds.length)
+          sendBoardUpdate('reorder-card', boardId, senderSocketId, card)
       }
     } else res.status(404).json({ message: 'Card is not found' })
   } catch (error) {
@@ -68,8 +70,10 @@ export const renameCard = async (req: Request, res: Response) => {
 
       const roomInfo = io.sockets.adapter.rooms.get(boardId)
       if (roomInfo) {
+        const senderSocketId = userSocketMap.get(req.user?.id || '')
         const userIds = Array.from(roomInfo)
-        if (userIds.length) sendBoardUpdate('rename-card', boardId, '', card)
+        if (userIds.length)
+          sendBoardUpdate('rename-card', boardId, senderSocketId, card)
       }
     } else res.status(404).json({ message: 'Card is not found' })
   } catch (error) {

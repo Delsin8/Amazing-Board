@@ -1,12 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-interface User {
-  id: string
-  name: string
-}
+import { IUser } from 'types/commonTypes'
 
 interface UserState {
-  user: User | null
+  user: IUser | null
 }
 
 const initialState: UserState = {
@@ -17,14 +13,14 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User>) {
-      state.user = action.payload
+    setUser: (state, action: PayloadAction<{ token: string; user: IUser }>) => {
+      state.user = action.payload.user
     },
-    logout(state) {
+    clearUser: state => {
       state.user = null
     },
   },
 })
 
-export const { setUser, logout } = userSlice.actions
+export const { setUser, clearUser } = userSlice.actions
 export default userSlice.reducer

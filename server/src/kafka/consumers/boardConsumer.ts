@@ -20,11 +20,13 @@ export const initializeBoardConsumer = async (
 
       if (value) {
         const data = JSON.parse(value)
+        const senderSocket = io.sockets.sockets.get(data.senderId)
         console.log(data)
+
         switch (data.actionType) {
           case 'reorder-card':
             console.log('reorder-card')
-            io.emit('updatedCardPosition', {
+            senderSocket?.to(data.boardId).emit('updatedCardPosition', {
               cardId: data.payload.id,
               listId: data.payload.list,
               position: data.payload.position,
@@ -33,7 +35,7 @@ export const initializeBoardConsumer = async (
             break
           case 'reorder-list':
             console.log('reorder-list')
-            io.emit('updatedListPosition', {
+            senderSocket?.to(data.boardId).emit('updatedListPosition', {
               listId: data.payload.id,
               position: data.payload.position,
               infoMessage: `List ${data.payload.name} has been moved by ""`,
@@ -41,7 +43,7 @@ export const initializeBoardConsumer = async (
             break
           case 'rename-card':
             console.log('rename-card')
-            io.emit('updatedCardName', {
+            senderSocket?.to(data.boardId).emit('updatedCardName', {
               cardId: data.payload.id,
               name: data.payload.name,
               infoMessage: `Card has been renamed to "${data.payload.name}"`,
@@ -49,7 +51,7 @@ export const initializeBoardConsumer = async (
             break
           case 'list-color-update':
             console.log('list-color-update')
-            io.emit('updatedListColor', {
+            senderSocket?.to(data.boardId).emit('updatedListColor', {
               listId: data.payload.id,
               color: data.payload.color,
               infoMessage: `Card has been renamed to "${data.payload.name}"`,

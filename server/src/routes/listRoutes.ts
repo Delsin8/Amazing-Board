@@ -1,3 +1,4 @@
+import { authTempMiddleware } from '../middlewares/authMiddleware'
 import {
   changeListColor,
   createList,
@@ -13,7 +14,7 @@ router.post('/', createList)
 router.get('/:id', getOneList)
 router.get('/', getAllLists)
 
-router.patch('/reorder', reorderList)
-router.patch('/change-color', changeListColor)
+router.patch('/reorder', authTempMiddleware, reorderList)
+router.patch('/change-color', authTempMiddleware, changeListColor)
 
 export default router

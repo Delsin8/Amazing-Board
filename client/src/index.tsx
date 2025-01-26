@@ -11,6 +11,7 @@ import SignInPage from './pages/SignIn'
 import { store } from './app/store'
 import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { handleTokenInInterceptor } from './api/apiClient'
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,8 @@ const router = createBrowserRouter([
     element: <SignupPage />,
   },
 ])
+
+handleTokenInInterceptor(store.dispatch)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>

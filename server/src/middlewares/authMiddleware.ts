@@ -72,6 +72,7 @@ export const authTempMiddleware = async (
       process.env.JWT_SECRET as string
     ) as TokenPayload
     req.user = { id: decoded.id, username: decoded.username }
+    res.setHeader('Authorization', `Bearer ${token}`)
     next()
   } catch (error) {
     next()

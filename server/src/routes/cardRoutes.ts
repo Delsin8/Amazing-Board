@@ -1,3 +1,4 @@
+import { authTempMiddleware } from '../middlewares/authMiddleware'
 import {
   createCard,
   getAllCards,
@@ -13,7 +14,7 @@ router.post('/', createCard)
 router.get('/:id', getOneCard)
 router.get('/', getAllCards)
 
-router.patch('/reorder', reorderCard)
-router.patch('/rename', renameCard)
+router.patch('/reorder', authTempMiddleware, reorderCard)
+router.patch('/rename', authTempMiddleware, renameCard)
 
 export default router

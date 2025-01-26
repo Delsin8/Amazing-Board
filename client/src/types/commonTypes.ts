@@ -1,5 +1,11 @@
 import { BoardAccessibility } from '../../../shared/types'
 
+export interface IUser {
+  id: string
+  name: string
+  email: string
+}
+
 export interface IBoard {
   id: string
   title: string

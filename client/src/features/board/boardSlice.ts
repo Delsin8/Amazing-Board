@@ -84,7 +84,6 @@ const boardSlice = createSlice({
       })
       .addCase(fetchBoard.fulfilled, (state, action) => {
         const data = normalize(action.payload, boardSchema)
-        console.log(action.payload)
         state.board = data.entities.board![data.result] as IBoardNormalized
         state.lists = data.entities.lists as Record<string, IListNormalized>
         state.cards = data.entities.cards as Record<string, ICard>
