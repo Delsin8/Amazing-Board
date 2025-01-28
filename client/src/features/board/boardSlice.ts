@@ -7,7 +7,8 @@ import {
 } from '../../types/commonTypes'
 import { normalize } from 'normalizr'
 import { boardSchema } from './schemas'
-import { fetchBoard } from './boardThunks'
+import { createCard, fetchBoard } from './boardThunks'
+import { toast } from 'react-toastify'
 
 interface BoardState {
   board: IBoardNormalized | null
@@ -78,6 +79,7 @@ const boardSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      /* Fetch board */
       .addCase(fetchBoard.pending, state => {
         // state.loading = true
         // state.error = null
@@ -92,6 +94,11 @@ const boardSlice = createSlice({
       .addCase(fetchBoard.rejected, (state, action) => {
         // state.loading = false
         // state.error = action.error.message || 'Failed to load board list'
+      })
+      /* Create card */
+      .addCase(createCard.fulfilled, (state, action: PayloadAction<ICard>) => {
+        state.cards[action.payload.id] = action.payload
+        state.lists[action.payload.list]?.cards.push(action.payload.id)
       })
   },
 })

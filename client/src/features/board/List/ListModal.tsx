@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { sendUpdateListName, sendUpdateListColor } from '../boardThunks'
 import { updateListColor, updateListItem } from '../boardSlice'
 import InputText from '../../../components/ui/InputText/InputText'
-import ColorPicker from '../../../components/ui/ColorPicker'
+import ColorPicker from '../../../components/ColorPicker'
 import { ColorIcon, TitleIcon } from '../../../assets/icons'
 import Button from '../../../components/ui/Button'
 
@@ -60,6 +60,8 @@ const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
       })
   }
 
+  const handleDeleteList = () => {}
+
   return (
     <Modal onClose={onClose}>
       <div className="flex flex-col gap-5">
@@ -84,7 +86,9 @@ const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={onClose}>Close</Button>
+          <Button variant="danger" onClick={handleDeleteList}>
+            Delete
+          </Button>
         </div>
       </div>
     </Modal>

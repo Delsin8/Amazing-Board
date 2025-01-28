@@ -3,7 +3,7 @@ import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from 'app/store'
-import CardModal from '../modals/CardModal'
+import CardModal from './CardModal'
 import { EditIcon } from '../../../assets/icons'
 import classNames from 'classnames'
 import { useDraggable, useDroppable } from '@dnd-kit/core'
@@ -80,7 +80,7 @@ const Card: React.FC<Props> = ({
       <div onPointerDown={e => e.stopPropagation()}>
         <EditIcon
           onClick={() => setOpenPopup(true)}
-          className="h-6 w-6 p-1 rounded-md opacity-0"
+          className="h-6 w-6 p-1 rounded-md opacity-0 text-gray-100"
           style={{ background: color }}
         />
 

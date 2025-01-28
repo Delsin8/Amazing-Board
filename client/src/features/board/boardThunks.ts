@@ -167,3 +167,28 @@ export const sendUpdateListColor = createAsyncThunk(
     }
   }
 )
+
+export const createCard = createAsyncThunk(
+  'board/createCard',
+  async (
+    { listId, boardId }: { listId: string; boardId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const body = JSON.stringify({ listId, boardId, name: 'Card' })
+      const response = await apiClient.post(`/cards`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status !== 200) {
+        throw new Error('Failed to update color of the list')
+      }
+      return await response.data
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue(error?.message)
+    }
+  }
+)

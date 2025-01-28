@@ -10,7 +10,7 @@ export const KANBAN_COLORS = [
   '#64b5f6', // Blues
   '#ffc107',
   '#e0a800',
-  '#fff176', // Yellows
+  '#d6c743', // Yellows
   '#fd7e14',
   '#e65100',
   '#ffb74d', // Oranges

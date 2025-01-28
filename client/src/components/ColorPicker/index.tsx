@@ -1,5 +1,5 @@
 import React from 'react'
-import { KANBAN_COLORS } from '../../../constants/kanbanColors'
+import { KANBAN_COLORS } from '../../constants/kanbanColors'
 
 interface Props {
   selectedColor: string

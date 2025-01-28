@@ -32,6 +32,8 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
       })
   }
 
+  const handleDeleteCard = () => {}
+
   return (
     <Modal onClose={onClose}>
       <div className="flex flex-col gap-5">
@@ -45,7 +47,9 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={onClose}>Close</Button>
+          <Button variant="danger" onClick={handleDeleteCard}>
+            Delete
+          </Button>
         </div>
       </div>
     </Modal>

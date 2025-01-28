@@ -2,11 +2,48 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 
-body {
-  width: 90vw;
-  margin: 1.5rem auto;
+$scrollbar-color: #091e4299;
+
+body,
+html,
+#root {
+  height: 100%;
 }
 
-.modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.75);
+body {
+  width: 95vw;
+  margin: 0 auto;
+  background-color: #f3f4f6;
+}
+
+// Scrollbar
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-color transparent;
+}
+
+/* Webkit Browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: $scrollbar-color;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  transition: background 0.3s ease;
+}
+
+/* Fallback for Internet Explorer */
+* {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }
