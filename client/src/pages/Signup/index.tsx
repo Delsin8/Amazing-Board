@@ -1,32 +1,33 @@
-import apiClient from '../../api/apiClient'
-import React, { useRef } from 'react'
+import Button from '../../components/ui/Button'
+import InputText from '../../components/ui/InputText/InputText'
+import React, { useState } from 'react'
 
 const SignupPage = () => {
-  const nameRef = useRef<HTMLInputElement>(null)
-  const passwordRef = useRef<HTMLInputElement>(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const body = JSON.stringify({
-      username: nameRef.current?.value,
-      password: passwordRef.current?.value,
-    })
-    apiClient.post('http://localhost:5000/users/signup', body, {
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
+  const handleSignin = () => {}
 
   return (
-    <form onSubmit={submit}>
-      <input type="text" name="username" placeholder="username" ref={nameRef} />
-      <input
-        type="password"
-        name="password"
-        placeholder="password"
-        ref={passwordRef}
-      />
-      <button>Save</button>
-    </form>
+    <div className="w-full h-full flex justify-center items-center pb-20">
+      <div className="w-80 flex flex-col gap-4">
+        <InputText
+          placeholder="Username"
+          value={username}
+          onChange={setUsername}
+        />
+        <InputText
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+        />
+
+        <Button variant="dark" onClick={handleSignin}>
+          Sign up
+        </Button>
+      </div>
+    </div>
   )
 }
 

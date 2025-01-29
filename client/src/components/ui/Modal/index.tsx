@@ -1,4 +1,6 @@
+import classNames from 'classnames'
 import React from 'react'
+import * as styles from './styles.module.scss'
 
 interface Props {
   onClose: () => void
@@ -7,9 +9,14 @@ interface Props {
 
 const Modal: React.FC<Props> = ({ onClose, children }) => {
   return (
-    <div className="modal-backdrop fixed inset-0 bg-black flex justify-center items-center z-50">
+    <div
+      className={classNames(
+        styles['modal-backdrop'],
+        'modal-backdrop fixed inset-0 flex justify-center items-center z-50'
+      )}
+    >
       <div
-        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative"
+        className="bg-gray-200 rounded-lg shadow-lg p-6 w-full max-w-md relative"
         onClick={e => e.stopPropagation()}
       >
         <button

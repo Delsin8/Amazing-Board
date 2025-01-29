@@ -4,9 +4,10 @@ import Card, { ICard } from '../models/Card'
 import { Request, Response } from 'express'
 
 export const createCard = async (req: Request, res: Response) => {
-  const { name } = req.body
+  const { name, listId, boardId } = req.body
   try {
-    const card: ICard = new Card({ name })
+    console.log(name, listId)
+    const card: ICard = new Card({ name, list: listId, position: 0 })
     await card.save()
     res.status(201).json(card)
   } catch (error: any) {

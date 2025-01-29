@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import List from './List'
+import ReactDOM from 'react-dom'
+import List from '../List/List'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -18,16 +19,22 @@ import {
   calculateDndCardHover,
 } from '../../../utils/DnDPositions'
 import {
+  selectBoard,
   selectDenormalizedBoard,
   selectDenormalizedCards,
 } from '../boardSelectors'
-import apiClient from '../../../api/apiClient'
+import CreateList from '../components/CreateList'
+import { EditIcon } from '../../../assets/icons'
+import BoardModal from './BoardModal'
 
 const Board: React.FC = () => {
   const dispatch = useDispatch()
 
   const board = useSelector(selectDenormalizedBoard)
+  const boardNormalized = useSelector(selectBoard)
   const cards = useSelector(selectDenormalizedCards)
+
+  const [openPopup, setOpenPopup] = useState(false)
 
   const [overInfo, setOverInfo] = useState<{
     listId: string
@@ -38,6 +45,8 @@ const Board: React.FC = () => {
   } | null>(null)
 
   if (!board) return null
+
+  const handleTogglePopup = () => setOpenPopup(!openPopup)
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event
@@ -177,11 +186,17 @@ const Board: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="font-bold text-3xl">{board?.title}</h1>
-      <div className="mb-4">{board?.description}</div>
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <h1 className="font-bold text-3xl">{board?.title}</h1>
+        <EditIcon
+          className="p-1 rounded-md bg-gray-200 cursor-pointer hover:opacity-60"
+          onClick={handleTogglePopup}
+        />
+      </div>
+      <div className="m2-4">{board?.description}</div>
 
-      <ol className="w-100 flex gap-4 bg-slate-100 rounded-md p-4">
+      <ol className="w-full h-full mb-2 p-4 flex gap-4 bg-slate-200 rounded-md overflow-x-auto">
         <DndContext
           collisionDetection={closestCorners}
           onDragEnd={handleDragEnd}
@@ -196,7 +211,15 @@ const Board: React.FC = () => {
             ))}
           </SortableContext>
         </DndContext>
+
+        <CreateList />
       </ol>
+
+      {openPopup &&
+        ReactDOM.createPortal(
+          <BoardModal onClose={handleTogglePopup} {...boardNormalized!} />,
+          document.getElementById('modal') as HTMLDivElement
+        )}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import Board from '../../features/board/components/Board'
+import Board from '../../features/board/Board/Board'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBoard } from '../../features/board/boardThunks'
 import { useSocket } from '../../context/SocketProvider'

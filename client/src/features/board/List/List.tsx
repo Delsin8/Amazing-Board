@@ -1,20 +1,18 @@
 import React, { useState } from 'react'
 import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
-import Card from './Card'
+import Card from '../Card/Card'
 import Badge from '../../../components/ui/Badge/Badge'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'app/store'
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { EditIcon } from '../../../assets/icons'
-import ListModal from '../modals/ListModal'
+import { EditIcon, PlusIcon } from '../../../assets/icons'
+import ListModal from './ListModal'
 import classNames from 'classnames'
 import { useDroppable } from '@dnd-kit/core'
+import Button from '../../../components/ui/Button'
+import { createCard } from '../boardThunks'
 
 interface Props {
   listId: string
@@ -28,6 +26,8 @@ interface Props {
 }
 
 const List: React.FC<Props> = ({ listId, overInfo }) => {
+  const dispatch = useDispatch()
+
   const list = useSelector((state: RootState) => state.board.lists[listId])
   const { cards: cardsNormalized } = useSelector(
     (state: RootState) => state.board
@@ -65,13 +65,18 @@ const List: React.FC<Props> = ({ listId, overInfo }) => {
     setNodeRefDroppable(element)
   }
 
+  const handleCreateCard = () => {
+    // @ts-ignore
+    dispatch(createCard({ listId, boardId: list.board }))
+  }
+
   return (
     <li
       ref={setNodeRef}
       {...attributes}
       {...listeners}
       style={style}
-      className={classNames('flex flex-col gap-4 p-4')}
+      className={classNames('h-full flex flex-col gap-4 p-4')}
     >
       <div
         className={classNames(
@@ -79,14 +84,14 @@ const List: React.FC<Props> = ({ listId, overInfo }) => {
           'flex justify-between gap-2 touch-none'
         )}
       >
-        <Badge color={list.color}>{list?.name}</Badge>
+        <Badge bgColor={list.color}>{list?.name}</Badge>
         <div
           onPointerDown={e => e.stopPropagation()}
           onClick={() => setOpenPopup(true)}
           className="flex items-center"
         >
           <EditIcon
-            className="h-6 w-6 p-1 rounded-md opacity-0"
+            className="h-6 w-6 p-1 rounded-md opacity-0 text-gray-100"
             style={{ background: list.color }}
           />
 
@@ -97,9 +102,8 @@ const List: React.FC<Props> = ({ listId, overInfo }) => {
             )}
         </div>
       </div>
-
       <div
-        className="flex flex-col gap-3 w-72"
+        className="flex flex-col gap-3 w-60"
         onClick={e => {
           e.preventDefault()
           e.stopPropagation()
@@ -125,8 +129,15 @@ const List: React.FC<Props> = ({ listId, overInfo }) => {
             key={card.id}
           />
         ))}
+
+        <Button
+          variant="light"
+          onPointerDown={e => e.stopPropagation()}
+          onClick={handleCreateCard}
+        >
+          <PlusIcon /> Add a card
+        </Button>
       </div>
-      <button>Add card</button>
     </li>
   )
 }
