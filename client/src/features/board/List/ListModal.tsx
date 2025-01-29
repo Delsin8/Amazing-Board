@@ -71,6 +71,7 @@ const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
             value={listName}
             onChange={setListName}
             onBlur={handleUpdateListName}
+            className="w-5/6"
           />
         </div>
 

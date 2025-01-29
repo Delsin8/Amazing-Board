@@ -43,6 +43,7 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
             value={cardName}
             onChange={setCardName}
             onBlur={handleUpdateCardName}
+            className="w-5/6"
           />
         </div>
 

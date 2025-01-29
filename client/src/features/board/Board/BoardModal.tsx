@@ -32,6 +32,7 @@ const BoardModal: React.FC<Props> = ({ onClose, ...board }) => {
             value={boardTitle}
             onChange={setBoardTitle}
             onBlur={handleUpdateBoardTitle}
+            className="w-5/6"
           />
         </div>
 
