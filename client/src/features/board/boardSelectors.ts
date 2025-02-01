@@ -1,8 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'app/store'
-import { denormalize } from 'normalizr'
 import { boardSchema } from './schemas'
-import { IBoard, ICard } from '../../types/commonTypes'
+import { IBoard, ICard } from 'types/commonTypes'
+
+import { createSelector } from '@reduxjs/toolkit'
+import { denormalize } from 'normalizr'
 
 export const selectBoardState = (state: RootState) => state.board
 

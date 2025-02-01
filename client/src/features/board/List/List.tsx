@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
-import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
+
+import * as styles from '../styles.module.scss'
+
+import { Badge, Button } from 'components/ui'
 import Card from '../Card/Card'
-import Badge from '../../../components/ui/Badge/Badge'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'app/store'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { EditIcon, PlusIcon } from '../../../assets/icons'
 import ListModal from './ListModal'
-import classNames from 'classnames'
-import { useDroppable } from '@dnd-kit/core'
-import Button from '../../../components/ui/Button'
+
+import { RootState } from 'app/store'
 import { createCard } from '../boardThunks'
+
+import { EditIcon, PlusIcon } from 'assets/icons'
+
+import classNames from 'classnames'
+import { CSS } from '@dnd-kit/utilities'
+import { useSortable } from '@dnd-kit/sortable'
+import { useDroppable } from '@dnd-kit/core'
+import { useDispatch, useSelector } from 'react-redux'
 
 interface Props {
   listId: string

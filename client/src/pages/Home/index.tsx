@@ -1,5 +1,5 @@
+import { useSocket } from 'hooks'
 import React, { useEffect } from 'react'
-import { useSocket } from '../../context/SocketProvider'
 
 interface Props {}
 

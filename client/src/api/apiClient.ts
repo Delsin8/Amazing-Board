@@ -1,8 +1,10 @@
 import { AppDispatch } from 'app/store'
+import { setUser } from 'features/user/userSlice'
+
+import { IUser } from 'types/commonTypes'
+
 import axios from 'axios'
-import { setUser } from '../features/user/userSlice'
 import { jwtDecode } from 'jwt-decode'
-import { IUser } from '../types/commonTypes'
 
 const apiClient = axios.create({
   baseURL: process.env.API_URL,

@@ -2,7 +2,20 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import List from '../List/List'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { updateCardPosition, updateListPosition } from '../boardSlice'
+import {
+  calculateDndNewPosition,
+  calculateDndCardHover,
+} from 'utils/DnDPositions'
+import {
+  selectBoard,
+  selectDenormalizedBoard,
+  selectDenormalizedCards,
+} from '../boardSelectors'
+import CreateList from '../components/CreateList'
+import { EditIcon } from 'assets/icons'
+import BoardModal from './BoardModal'
+
 import {
   closestCorners,
   DndContext,
@@ -13,19 +26,7 @@ import {
   horizontalListSortingStrategy,
   SortableContext,
 } from '@dnd-kit/sortable'
-import { updateCardPosition, updateListPosition } from '../boardSlice'
-import {
-  calculateDndNewPosition,
-  calculateDndCardHover,
-} from '../../../utils/DnDPositions'
-import {
-  selectBoard,
-  selectDenormalizedBoard,
-  selectDenormalizedCards,
-} from '../boardSelectors'
-import CreateList from '../components/CreateList'
-import { EditIcon } from '../../../assets/icons'
-import BoardModal from './BoardModal'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Board: React.FC = () => {
   const dispatch = useDispatch()

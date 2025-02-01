@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
-import Modal from '../../../components/ui/Modal'
-import { IBoardNormalized } from '../../../types/commonTypes'
+import { Button, InputText, Modal, TextArea } from 'components/ui'
+import { IBoardNormalized } from 'types/commonTypes'
+import { DescriptionIcon, TitleIcon } from 'assets/icons'
+
 import { useDispatch } from 'react-redux'
-import InputText from '../../../components/ui/InputText/InputText'
-import { DescriptionIcon, TitleIcon } from '../../../assets/icons'
-import Button from '../../../components/ui/Button'
-import TextArea from '../../../components/ui/Textarea'
 
 interface Props extends IBoardNormalized {
   onClose: () => void
 }
 
 const BoardModal: React.FC<Props> = ({ onClose, ...board }) => {
-  const dispatch = useDispatch()
-
   const [boardTitle, setBoardTitle] = useState(board.title)
   const [boardDescription, setBoardDescription] = useState(board.description)
 

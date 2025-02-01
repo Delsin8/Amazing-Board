@@ -1,4 +1,4 @@
-import { BoardAccessibility } from '../../../shared/types'
+import { BoardAccessibility } from 'shared/types'
 
 export interface IUser {
   id: string

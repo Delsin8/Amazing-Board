@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { fetchBoardList } from './boardListSlice'
+import React from 'react'
+
 import BoardPreview from './BoardPreviewItem'
-import { IBoard } from '../../types/commonTypes'
-import { BoardAccessibility } from '../../../../shared/types'
+import { IBoard } from 'types/commonTypes'
+import { BoardAccessibility } from 'shared/types'
 
 const data: IBoard[] = [
   {

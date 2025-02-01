@@ -1,5 +1,6 @@
+import apiClient from 'api/apiClient'
+
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import apiClient from '../../api/apiClient'
 
 interface BoardShort {
   id: string

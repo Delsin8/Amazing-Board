@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
-import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
-import { useSelector } from 'react-redux'
-import { RootState } from 'app/store'
+
+import * as styles from '../styles.module.scss'
+
 import CardModal from './CardModal'
-import { EditIcon } from '../../../assets/icons'
+
+import { RootState } from 'app/store'
+
+import { EditIcon } from 'assets/icons'
+
 import classNames from 'classnames'
+import { useSelector } from 'react-redux'
 import { useDraggable, useDroppable } from '@dnd-kit/core'
 
 interface Props {

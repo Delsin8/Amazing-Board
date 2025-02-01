@@ -10,6 +10,7 @@ import {
   getOneBoard,
   removeAllowedUser,
 } from '../controllers/boardController'
+
 import express from 'express'
 
 const router = express.Router()

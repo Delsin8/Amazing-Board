@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import Modal from '../../../components/ui/Modal'
-import { ICard } from '../../../types/commonTypes'
-import { useDispatch } from 'react-redux'
+
+import { Button, InputText, Modal } from 'components/ui'
 import { sendUpdateCardName } from '../boardThunks'
+
+import { ICard } from 'types/commonTypes'
+
 import { updateCardName } from '../boardSlice'
-import { TitleIcon } from '../../../assets/icons'
-import InputText from '../../../components/ui/InputText/InputText'
-import Button from '../../../components/ui/Button'
+
+import { TitleIcon } from 'assets/icons'
+
+import { useDispatch } from 'react-redux'
 
 interface Props extends ICard {
   boardId: string
