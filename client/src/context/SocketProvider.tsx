@@ -1,12 +1,13 @@
-import { RootState } from 'app/store'
+import React, { createContext, useEffect, useRef } from 'react'
+
 import {
   updateCardName,
   updateCardPosition,
   updateListColor,
   updateListPosition,
 } from '../features/board/boardSlice'
-import React, { createContext, useContext, useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'hooks'
+
 import { toast } from 'react-toastify'
 import { io, Socket } from 'socket.io-client'
 
@@ -62,8 +63,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     })
   )
 
-  const user = useSelector((state: RootState) => state.user)
-  const dispatch = useDispatch()
+  const user = useAppSelector(state => state.user)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     return () => {

@@ -14,14 +14,8 @@ const BoardPage: React.FC<Props> = () => {
   const dispatch = useAppDispatch()
   const { user } = useAppSelector(state => state.user)
 
-  // const [boardData, isLoading, error] = useFetch<IBoard>(
-  //   `${location.pathname}`,
-  //   {} as IBoard
-  // )
-
   useEffect(() => {
-    // @ts-ignore
-    dispatch(fetchBoard(boardId))
+    dispatch(fetchBoard(boardId!))
 
     if (user) socket.enterBoardRoom(boardId!, user.id)
 
@@ -31,11 +25,6 @@ const BoardPage: React.FC<Props> = () => {
   }, [user])
 
   return <Board />
-
-  // return <div>123</div>
-
-  // if (isLoading) return <div>Loading...</div>
-  // else if (!isLoading && boardData) return <Board {...boardData} />
 }
 
 export default BoardPage

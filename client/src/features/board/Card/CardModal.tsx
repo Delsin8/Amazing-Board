@@ -9,7 +9,7 @@ import { updateCardName } from '../boardSlice'
 
 import { TitleIcon } from 'assets/icons'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'hooks'
 
 interface Props extends ICard {
   boardId: string
@@ -17,7 +17,7 @@ interface Props extends ICard {
 }
 
 const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [cardName, setCardName] = useState(name)
 
@@ -27,7 +27,6 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
 
     dispatch(updateCardName({ ...card }))
 
-    // @ts-ignore
     dispatch(sendUpdateCardName({ ...card, boardId }))
       .unwrap()
       .catch(() => {

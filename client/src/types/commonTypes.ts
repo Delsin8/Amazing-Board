@@ -42,3 +42,11 @@ export interface DropIndicator {
   listId: string
   index: number
 }
+
+export interface DnDOverCardInfo {
+  listId: string
+  listIndex: number
+  cardId: string
+  cardIndex: number
+  position: 'above' | 'below'
+}

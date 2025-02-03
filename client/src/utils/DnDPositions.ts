@@ -1,3 +1,5 @@
+import { DnDOverCardInfo } from 'types/commonTypes'
+
 export const calculateDndNewPosition = <
   T extends { id: string; position: number }
 >(
@@ -39,17 +41,12 @@ export const calculateDndNewPosition = <
   return newPos
 }
 
-export const calculateDndCardHover = <
-  T extends { id: string; position: number }
->(
-  items: T[],
+export const calculateDndCardHover = (
   overItemIndex: number,
   activeItemIndex: number,
   isSameList: boolean
 ) => {
   let newPos: 'below' | 'above' = 'below'
-  const prevCardIndex = overItemIndex - 1
-  const nextCardIndex = overItemIndex + 1
 
   if (!isSameList) {
     newPos = 'below'
@@ -59,4 +56,23 @@ export const calculateDndCardHover = <
   }
 
   return newPos
+}
+
+export const showCardDropIndicator = (
+  currentIndex: number,
+  currentListId: string,
+  overInfo: DnDOverCardInfo | null,
+  position: 'above' | 'below'
+) => {
+  if (
+    !overInfo ||
+    currentListId !== overInfo?.listId ||
+    !Number.isFinite(overInfo.cardIndex)
+  )
+    return false
+
+  return (
+    Math.abs(overInfo.cardIndex as number) === currentIndex &&
+    overInfo.position === position
+  )
 }
