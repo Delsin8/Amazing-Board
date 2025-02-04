@@ -1,6 +1,6 @@
 import React from 'react'
-import Button from '../../../components/ui/Button'
-import { PlusIcon } from '../../../assets/icons'
+import { Button } from 'components/ui'
+import { PlusIcon } from 'assets/icons'
 
 const CreateList = () => {
   const handleAddList = () => {}

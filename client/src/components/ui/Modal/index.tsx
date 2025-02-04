@@ -1,6 +1,6 @@
-import classNames from 'classnames'
 import React from 'react'
 import * as styles from './styles.module.scss'
+import classNames from 'classnames'
 
 interface Props {
   onClose: () => void

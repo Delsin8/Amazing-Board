@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import apiClient from '../../../api/apiClient'
+import apiClient from 'api/apiClient'
 
 interface Props {
   boardId: string

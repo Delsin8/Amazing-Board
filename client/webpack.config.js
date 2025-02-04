@@ -23,7 +23,11 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.svg', '.scss'],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    alias: {
+      shared: path.resolve(__dirname, '../shared'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.svg', '.css', '.scss'],
   },
   module: {
     rules: [

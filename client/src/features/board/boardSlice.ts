@@ -1,14 +1,9 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  IBoardNormalized,
-  ICard,
-  IList,
-  IListNormalized,
-} from '../../types/commonTypes'
-import { normalize } from 'normalizr'
+import { IBoardNormalized, ICard, IListNormalized } from 'types/commonTypes'
 import { boardSchema } from './schemas'
 import { createCard, fetchBoard } from './boardThunks'
-import { toast } from 'react-toastify'
+
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { normalize } from 'normalizr'
 
 interface BoardState {
   board: IBoardNormalized | null

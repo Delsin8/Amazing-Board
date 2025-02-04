@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import Button from '../../components/ui/Button'
-import InputText from '../../components/ui/InputText/InputText'
+import { Button, InputText } from 'components/ui'
 
-const SignInPage = () => {
+const SignInPage: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 

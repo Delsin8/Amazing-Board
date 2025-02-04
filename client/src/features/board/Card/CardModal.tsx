@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import Modal from '../../../components/ui/Modal'
-import { ICard } from '../../../types/commonTypes'
-import { useDispatch } from 'react-redux'
+
+import { Button, InputText, Modal } from 'components/ui'
 import { sendUpdateCardName } from '../boardThunks'
+
+import { ICard } from 'types/commonTypes'
+
 import { updateCardName } from '../boardSlice'
-import { TitleIcon } from '../../../assets/icons'
-import InputText from '../../../components/ui/InputText/InputText'
-import Button from '../../../components/ui/Button'
+
+import { TitleIcon } from 'assets/icons'
+
+import { useAppDispatch } from 'hooks'
 
 interface Props extends ICard {
   boardId: string
@@ -14,7 +17,7 @@ interface Props extends ICard {
 }
 
 const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [cardName, setCardName] = useState(name)
 
@@ -24,7 +27,6 @@ const CardModal: React.FC<Props> = ({ id, name, boardId, onClose }) => {
 
     dispatch(updateCardName({ ...card }))
 
-    // @ts-ignore
     dispatch(sendUpdateCardName({ ...card, boardId }))
       .unwrap()
       .catch(() => {

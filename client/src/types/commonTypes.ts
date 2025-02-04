@@ -1,4 +1,4 @@
-import { BoardAccessibility } from '../../../shared/types'
+import { BoardAccessibility } from 'shared/types'
 
 export interface IUser {
   id: string
@@ -41,4 +41,12 @@ export interface ICard {
 export interface DropIndicator {
   listId: string
   index: number
+}
+
+export interface DnDOverCardInfo {
+  listId: string
+  listIndex: number
+  cardId: string
+  cardIndex: number
+  position: 'above' | 'below'
 }

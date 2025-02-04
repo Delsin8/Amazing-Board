@@ -15,10 +15,10 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "paths": {
-      "@shared/*": ["../../shared/*"]
+      "shared/*": ["../../shared/*"]
     },
     "typeRoots": ["./node_modules/@types", "../index.d.ts"]
   },
-  "include": ["src", "index.d.ts", "../shared/**/*"],
+  "include": ["src", "index.d.ts", "../shared"],
   "exclude": ["node_modules", "dist"]
 }

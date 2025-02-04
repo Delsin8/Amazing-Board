@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
-import Modal from '../../../components/ui/Modal'
-import { IListNormalized } from '../../../types/commonTypes'
-import { useDispatch } from 'react-redux'
+
+import { Button, InputText, Modal } from 'components/ui'
+import ColorPicker from 'components/ColorPicker'
+
+import { IListNormalized } from 'types/commonTypes'
+
 import { sendUpdateListName, sendUpdateListColor } from '../boardThunks'
 import { updateListColor, updateListItem } from '../boardSlice'
-import InputText from '../../../components/ui/InputText/InputText'
-import ColorPicker from '../../../components/ColorPicker'
-import { ColorIcon, TitleIcon } from '../../../assets/icons'
-import Button from '../../../components/ui/Button'
+import { useAppDispatch } from 'hooks'
+
+import { ColorIcon, TitleIcon } from 'assets/icons'
 
 interface Props extends IListNormalized {
   onClose: () => void
 }
 
 const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [listName, setListName] = useState(list.name)
 
@@ -24,9 +26,7 @@ const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
 
     dispatch(updateListItem(newList))
 
-    // @ts-ignore
     dispatch(
-      // @ts-ignore
       sendUpdateListName({
         listId: list.id,
         name: listName,
@@ -45,9 +45,7 @@ const ListModal: React.FC<Props> = ({ onClose, ...list }) => {
 
     dispatch(updateListColor(newList))
 
-    // @ts-ignore
     dispatch(
-      // @ts-ignore
       sendUpdateListColor({
         listId: list.id,
         boardId: list.board,

@@ -1,83 +1,45 @@
 import React, { useState } from 'react'
-import * as styles from '../styles.module.scss'
 import ReactDOM from 'react-dom'
-import Card from '../Card/Card'
-import Badge from '../../../components/ui/Badge/Badge'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from 'app/store'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { EditIcon, PlusIcon } from '../../../assets/icons'
+
+import * as styles from '../styles.module.scss'
+
+import { Badge, Button } from 'components/ui'
 import ListModal from './ListModal'
-import classNames from 'classnames'
-import { useDroppable } from '@dnd-kit/core'
-import Button from '../../../components/ui/Button'
+import DnDCard from '../Card/DnDCard'
+
 import { createCard } from '../boardThunks'
+import { useAppDispatch, useAppSelector } from 'hooks'
+
+import { EditIcon, PlusIcon } from 'assets/icons'
+
+import { showCardDropIndicator } from 'utils/DnDPositions'
+import { DnDOverCardInfo } from 'types/commonTypes'
+
+import classNames from 'classnames'
 
 interface Props {
   listId: string
-  overInfo: {
-    listId: string
-    listIndex: number
-    cardId: string
-    cardIndex: number
-    position: 'above' | 'below'
-  } | null
+  overInfo: DnDOverCardInfo | null
 }
 
 const List: React.FC<Props> = ({ listId, overInfo }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const list = useSelector((state: RootState) => state.board.lists[listId])
-  const { cards: cardsNormalized } = useSelector(
-    (state: RootState) => state.board
-  )
+  const list = useAppSelector(state => state.board.lists[listId])
+  const { cards: cardsNormalized } = useAppSelector(state => state.board)
 
   const [openPopup, setOpenPopup] = useState(false)
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef: setNodeRefSortable,
-    transform,
-    transition,
-  } = useSortable({ id: listId, data: { type: 'list' } })
-
-  const { setNodeRef: setNodeRefDroppable } = useDroppable({
-    id: list.id,
-    data: {
-      type: 'list',
-      list,
-    },
-  })
 
   const cards = Object.values(cardsNormalized)
     .filter(card => card.list === listId)
     .sort((a, b) => a.position - b.position)
 
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-  }
-
-  const setNodeRef = (element: HTMLElement | null) => {
-    setNodeRefSortable(element)
-    setNodeRefDroppable(element)
-  }
-
   const handleCreateCard = () => {
-    // @ts-ignore
     dispatch(createCard({ listId, boardId: list.board }))
   }
 
   return (
-    <li
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={style}
-      className={classNames('h-full flex flex-col gap-4 p-4')}
-    >
+    <li className={classNames('h-full flex flex-col gap-4 p-4')}>
       <div
         className={classNames(
           styles['hover-icon-wrapper'],
@@ -110,22 +72,20 @@ const List: React.FC<Props> = ({ listId, overInfo }) => {
         }}
       >
         {cards.map((card, index) => (
-          <Card
+          <DnDCard
             cardId={card.id}
-            showDropIndicatorAbove={
-              list.id === overInfo?.listId &&
-              Number.isFinite(overInfo.cardIndex)
-                ? Math.abs(overInfo.cardIndex as number) === index &&
-                  overInfo.position === 'above'
-                : false
-            }
-            showDropIndicatorBelow={
-              list.id === overInfo?.listId &&
-              Number.isFinite(overInfo.cardIndex)
-                ? Math.abs(overInfo.cardIndex as number) === index &&
-                  overInfo.position === 'below'
-                : false
-            }
+            showDropIndicatorAbove={showCardDropIndicator(
+              index,
+              list.id,
+              overInfo,
+              'above'
+            )}
+            showDropIndicatorBelow={showCardDropIndicator(
+              index,
+              list.id,
+              overInfo,
+              'below'
+            )}
             key={card.id}
           />
         ))}

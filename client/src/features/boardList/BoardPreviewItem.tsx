@@ -1,5 +1,6 @@
 import React from 'react'
-import { IBoard } from '../../types/commonTypes'
+import { IBoard } from 'types/commonTypes'
+
 import { Link } from 'react-router-dom'
 
 interface Props extends IBoard {}

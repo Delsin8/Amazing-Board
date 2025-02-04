@@ -1,7 +1,7 @@
-import Button from '../../components/ui/Button'
+import { Button } from 'components/ui'
 import { Link } from 'react-router-dom'
 
-function NotFoundPage() {
+const NotFoundPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-3 min-h-screen bg-gray-100 text-gray-900 pb-20">
       <h1 className="text-6xl font-bold text-red-500">404</h1>

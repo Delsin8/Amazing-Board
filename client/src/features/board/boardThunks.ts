@@ -1,5 +1,6 @@
+import apiClient from 'api/apiClient'
+
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import apiClient from '../../api/apiClient'
 
 export const fetchBoard = createAsyncThunk(
   'board/fetchBoard',

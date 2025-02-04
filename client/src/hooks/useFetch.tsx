@@ -1,4 +1,4 @@
-import apiClient from '../api/apiClient'
+import apiClient from 'api/apiClient'
 import React, { useEffect, useState } from 'react'
 
 function useFetch<T>(

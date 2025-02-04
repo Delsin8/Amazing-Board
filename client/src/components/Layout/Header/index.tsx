@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom'
-import { LogoIcon } from '../../../assets/layout-icons'
 import React from 'react'
-import Button from '../../ui/Button'
+import { Link } from 'react-router-dom'
+import { LogoIcon } from 'assets/layout-icons'
+import Button from 'components/ui/Button'
 
 const Header: React.FC = () => {
   const isLoggedIn = true

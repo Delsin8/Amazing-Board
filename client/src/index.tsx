@@ -1,18 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
-import SignupPage from './pages/SignUp'
-import BoardsPage from './pages/Boards'
-import BoardPage from './pages/Board'
+
 import './styles.scss'
-import { SocketProvider } from './context/SocketProvider'
-import SignInPage from './pages/SignIn'
-import { store } from './app/store'
+
+import {
+  BoardListPage,
+  BoardPage,
+  NotFoundPage,
+  SignInPage,
+  SignupPage,
+} from 'pages'
+
+import Layout from './components/Layout'
+
+import { store } from 'app/store'
+import { SocketProvider } from 'context/SocketProvider'
+import { handleTokenInInterceptor } from 'api/apiClient'
+
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { handleTokenInInterceptor } from './api/apiClient'
-import Layout from './components/Layout'
-import NotFoundPage from './pages/NotFound'
 
 const router = createBrowserRouter([
   {
@@ -25,7 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/boards',
-        element: <BoardsPage />,
+        element: <BoardListPage />,
       },
       {
         path: '/boards/:boardId',
